@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #000;
+  --secondary-color: #ffb21a;
+}
+img {
+  width: 100%;
+}
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+.btn {
+  border-radius: 100px;
+  width: 156px;
+  height: 41px;
+  background: linear-gradient(180deg, #f4b333 0%, #ffb21a 100%);
+  color: black;
+}
+
+#hero input[type="text"] {
+  /* border: 0.94px solid;
+  background-color: #d4d4d41a;
+  border-image-source: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 50%
+  );
+  color: #fff; */
+
+  background: #0000001a;
+  color: white;
+}
+#hero .grad-1 {
+  width: 60%;
+  height: 20%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 178, 26, 1),
+    rgba(255, 178, 26, 1),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+#info_submit .grad {
+  background: linear-gradient(
+    180deg,
+    #f0f0f0 0%,
+    rgba(240, 240, 240, 0.81) 100%
+  );
+}
+#info_submit input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+#info_submit .grad::placeholder {
+  color: #98979f;
+}
+
+footer input[type="text"],
+#waitlist input,
+.hero_input {
+  width: 100%;
+  height: 70px;
+  border-radius: 50px;
+  padding-left: 20px;
+  padding-right: 145px;
+  font-size: 17px;
+  line-height: 25px;
+  background-color: #d4d4d41a;
+  border: 0.94px solid;
+  border-image-source: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 50%
+  );
+  color: #a8a8a8;
+}
+footer input[type="text"]:focus-visible,
+#waitlist input:focus-visible {
+  outline: none;
+}
+footer button {
+  border-radius: 50px;
+  outline: 1px solid transparent;
+  outline-offset: 5px;
+}
+
+#how_to #how_to_left {
+  transform: translateX(-200%);
+  transition: transform 0.3s ease-in;
+}
+#how_to.display #how_to_left {
+  transform: translateX(0%);
+}
+/* rotate the icons */
+#how_to #how_to_left img {
+  transform: rotate(90deg);
+  transition: transform 0.5s ease-in;
+}
+#how_to.display #how_to_left img {
+  transform: rotate(0deg);
+}
+
+#how_to #how_to_right img {
+  transform: rotate(-90deg);
+  transition: transform 0.5s ease-in;
+}
+#how_to.display #how_to_right img {
+  transform: rotate(0deg);
+}
+
+#how_to #how_to_middle img {
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+#how_to.display #how_to_middle img {
+  opacity: 1;
+}
+
+#how_to #how_to_middle > div div:nth-child(1) {
+  transform: scale(0);
+  transition: transform 0.5s ease-in;
+}
+#how_to.display #how_to_middle > div div:nth-child(1) {
+  transform: scale(1);
+}
+
+#how_to #how_to_right {
+  transform: translateX(200%);
+  transition: transform 0.3s ease-in;
+}
+#how_to.display #how_to_right {
+  transform: translateX(0%);
+}
+
+/* remove arrows from input[number] */
+#waitlist input::-webkit-outer-spin-button,
+#waitlist input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#waitlist input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* linear gradient for text in wailtlist header */
+.text-grad {
+  background: linear-gradient(89.26deg, #e88d0e 0.64%, #999999 137.75%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* animate car */
+#car.enter {
+  transition: left 1.2s ease-in;
+  left: 40vw;
+  /* animation: car_anime 1.6s infinite 1.2s; */
+}
+@keyframes car_anime {
+  0% {
+    left: 10vw;
+  }
+  100% {
+    left: 40vw;
+  }
+}
+@media (max-width: 768px) {
+  #car.enter {
+    left: 10vw;
+    /* animation: car_anime 1.6s infinite 1.2s; */
+  }
+  /* @keyframes car_anime {
+    0% {
+      left: -10vw;
+    }
+    100% {
+      left: 20vw;
+    }
+  } */
+}
