@@ -62,6 +62,9 @@ const Footer = () => {
             <li className="hover:scale-[1.1] cursor-pointer mb-[10px]">
               <Link href="/support">Support</Link>
             </li>
+            <li>
+              No 7 Ahmadu Bello Close Peace Court Est Lokogoma Abuja
+            </li>
           </ul>
           {/* Third column */}
           <div className="w-[339px] flex flex-col-reverse justify-between min-h-[229px] md:mt-0 mt-[20px]">
