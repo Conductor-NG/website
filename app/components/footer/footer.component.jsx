@@ -62,9 +62,6 @@ const Footer = () => {
             <li className="hover:scale-[1.1] cursor-pointer mb-[10px]">
               <Link href="/support">Support</Link>
             </li>
-            <li>
-              No 7 Ahmadu Bello Close Peace Court Est Lokogoma Abuja
-            </li>
           </ul>
           {/* Third column */}
           <div className="w-[339px] flex flex-col-reverse justify-between min-h-[229px] md:mt-0 mt-[20px]">
@@ -89,7 +86,7 @@ const Footer = () => {
         </div>
         <div className="bg-[var(--secondary-color)] md:h-[100px]  h-[100%]">
           <div className="md:px-[30px]  px-[15px] flex md:flex-row flex-col md:gap-[250px] gap-[30px] md:justify-center justify-start pt-[20px] font-hilmar font-semibold text-[16px] text-center leading-[17px] tracking-[3px]">
-            <p>&copy;CONDUCTOR. All Rights Reserved. {dt.getFullYear()}</p>
+            <p className="text-sm">&copy;CONDUCTOR - <a href="#">No 7 Ahmadu Bello Close Peace Court Est Lokogoma Abuja</a></p>
             <ul className="flex md:flex-row flex-col gap-[30px] md:mb-0 mb-[15px]">
               <li>TERMS&CONDITIONS</li>
               <li>PRIVACY</li>
