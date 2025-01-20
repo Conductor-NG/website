@@ -7,7 +7,7 @@ import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 import { RiInstagramFill } from "react-icons/ri";
 
 const Footer = () => {
-  const dt = new Date();
+  // const dt = new Date();
   return (
     <footer className="">
       <div className="bg-white">
