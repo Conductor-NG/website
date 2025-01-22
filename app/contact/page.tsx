@@ -77,6 +77,25 @@ const Page = () => {
             </div>
           </form>
         </div>
+
+        <hr />
+
+        <div className="my-4 underline text-grey text-center"> Or reach out through any of the following channels</div>
+
+        <div className="flex flex-col gap-4 text-sm">
+          <div className="flex flex-row gap-4">
+            <span> Phone: </span> <span> +2348106902386 </span>
+          </div>
+
+          <div className="flex flex-row gap-4">
+            <span> Email: </span> <span> admin@conductor.ng </span>
+          </div>
+
+          <div className="flex flex-row gap-4">
+            <span> Address: </span> <span> No 7 Ahmadu Bello Close Peace Court Est Lokogoma Abuja </span>
+          </div>
+        </div>
+
       </section>
       <Footer />
     </>
