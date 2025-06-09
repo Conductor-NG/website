@@ -241,10 +241,10 @@ const TermsAndConditions = () => {
               </p>
               <div className="bg-muted p-4 rounded-lg">
                 <Link
-                  href="mailto:admin@conductor.ng"
+                  href="mailto:support@conductor.ng"
                   className="hover:scale-110 hover:opacity-85 hover:underline"
                 >
-                  <strong>Email:</strong> admin@conductor.ng
+                  <strong>Email:</strong> support@conductor.ng
                 </Link>
                 <p>
                   <strong>Phone:</strong> +234&nbsp;818&nbsp;887&nbsp;6601

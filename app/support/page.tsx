@@ -46,7 +46,7 @@ const Support = () => {
               Still have questions?
             </h2>
             <h3 className="font-medium md:text-[24px] text-[18px] leading-[29px]">
-              Reach out to us at info@conductor.ng
+              Reach out to us at support@conductor.ng
             </h3>
           </div>
         </div>

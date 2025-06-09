@@ -325,10 +325,10 @@ const PrivacyPolicy = () => {
                 </p>
                 <div className="bg-muted p-6 rounded-lg">
                   <Link
-                    href="mailto:admin@conductor.ng"
+                    href="mailto:support@conductor.ng"
                     className="hover:scale-110 hover:opacity-85 hover:underline"
                   >
-                    <strong>Email:</strong> admin@conductor.ng
+                    <strong>Email:</strong> support@conductor.ng
                   </Link>
                   <p>
                     <strong>Address:</strong> No 7 Ahmadu Bello Close Peace
