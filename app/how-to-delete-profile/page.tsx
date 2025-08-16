@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import Header from "@/app/components/ui/header.component";
-import ProgressBar from "@/app/components/ui/progressBar.component";
-import StepCard from "@/app/components/ui/stepCard.component";
-import WarningCard from "@/app/components/ui/warningCard.component";
-import { Button } from "@/app/components/ui/button.component";
+import Header from "@/components/ui/header.component";
+import ProgressBar from "@/components/ui/progressBar.component";
+import StepCard from "@/components/ui/stepCard.component";
+import WarningCard from "@/components/ui/warningCard.component";
+import { Button } from "@/components/ui/button.component";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import Footer from "../components/footer/footer.component";
+import Footer from "@/components/footer/footer";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -125,8 +125,11 @@ const Index = () => {
           </Link>
         </div>
       </div>
-      <hr />
-      <Footer />
+      <section className="bg-[#0a0704]">
+        <div className="md:px-0 px-[24px]">
+          <Footer />
+        </div>
+      </section>
     </div>
   );
 };

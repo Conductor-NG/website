@@ -1,4 +1,5 @@
-import { Separator } from "../components/ui/separator.component"; //"@ /components/ui/separator";
+import Footer from "@/components/footer/footer";
+import { Separator } from "@/components/ui/separator.component";
 
 const TermsOfUse = () => {
   return (
@@ -1364,6 +1365,11 @@ const TermsOfUse = () => {
           </div>
         </div>
       </div>
+      <section className="bg-[#0a0704]">
+        <div className="md:px-0 px-[24px]">
+          <Footer />
+        </div>
+      </section>
     </div>
   );
 };

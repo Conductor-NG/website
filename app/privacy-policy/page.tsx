@@ -15,7 +15,7 @@ import {
   UserPen,
   Eraser,
 } from "lucide-react";
-import Footer from "../components/footer/footer.component";
+import Footer from "@/components/footer/footer";
 
 const PrivacyPolicy = () => {
   return (
@@ -343,8 +343,11 @@ const PrivacyPolicy = () => {
           </div>
         </div>
       </div>
-      <hr />
-      <Footer />
+      <section className="bg-[#0a0704]">
+        <div className="md:px-0 px-[24px]">
+          <Footer />
+        </div>
+      </section>
     </div>
   );
 };

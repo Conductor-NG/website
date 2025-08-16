@@ -3,11 +3,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card.component";
-import { Separator } from "@/app/components/ui/separator.component";
+} from "@/components/ui/card.component";
+import { Separator } from "@/components/ui/separator.component";
 import { ArrowLeft, Shield } from "lucide-react";
 import Link from "next/link";
-import Footer from "../components/footer/footer.component";
+import Footer from "@/components/footer/footer";
 
 const TermsAndConditions = () => {
   return (
@@ -260,8 +260,11 @@ const TermsAndConditions = () => {
 
         <Separator className="my-8" />
       </div>
-      <hr />
-      <Footer />
+      <section className="bg-[#0a0704]">
+        <div className="md:px-0 px-[24px]">
+          <Footer />
+        </div>
+      </section>
     </div>
   );
 };
