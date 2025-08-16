@@ -9,21 +9,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-      fontFamily: {
-        hilmar: ["var(--font-hilmar)"],
-      },
-      keyframes: {
-        moving_text: {
-          "0%": { transform: "translateX(2%)" },
-          "50%": { transform: "translateX(10%)" },
-          "100%": { transform: "translateX(2%)" },
-        },
-      },
-      animation: {
-        moving_text: "moving_text 5s linear  infinite",
+        primary: "#e88d0e",
+        secondary: "#2e1c03",
+        tertiary: "#db405a",
       },
     },
     screens: {
