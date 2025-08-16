@@ -154,8 +154,16 @@ const NavBar = () => {
               />
             </Link>
           </span>
-
-          {scrollY === 0 ? (
+          {scrollY > 0 && (
+            <span>
+              <Link href="#scan">
+                <button className="hover:rounded-none transition-all duration-300 bg-primary  py-[8px] px-[33px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[14px]">
+                  Download the App
+                </button>
+              </Link>
+            </span>
+          )}
+          {scrollY === 0 && currentPage === "home" && (
             <span>
               <Link href="/driver">
                 <button className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[16px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[14px]">
@@ -163,11 +171,12 @@ const NavBar = () => {
                 </button>
               </Link>
             </span>
-          ) : (
+          )}
+          {scrollY === 0 && currentPage === "driver" && (
             <span>
-              <Link href="#scan">
-                <button className="hover:rounded-none transition-all duration-300 bg-primary  py-[8px] px-[33px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[14px]">
-                  Download the App
+              <Link href="/">
+                <button className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[16px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[14px]">
+                  Conductor.ng for Passengers
                 </button>
               </Link>
             </span>

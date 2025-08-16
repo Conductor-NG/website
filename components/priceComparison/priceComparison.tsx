@@ -268,7 +268,7 @@ const PriceComparison = () => {
               <div
                 className=" h-full w-[239px] mx-auto "
                 style={{
-                  background: "url(/images/daily2.png)",
+                  background: "url(/images/daily3.png)",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
@@ -285,133 +285,255 @@ const PriceComparison = () => {
           </div>
         )}
         {/* mobile */}
-        <div className="md:hidden grid grid-cols-1">
-          <div className="relative">
-            <div className="h-fit">
-              <div className="mb-[40px]">
-                <span className="font-normal text-[14px] text-[#454442]">
-                  From
-                </span>
-                <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
-                  <span>Ikeja bus stop, Under Bridge</span>{" "}
-                  <ArrowRight className="text-gray-600" />
+        {currentPage === "home" && (
+          <div className="md:hidden grid grid-cols-1">
+            <div className="relative">
+              <div className="h-fit">
+                <div className="mb-[40px]">
+                  <span className="font-normal text-[14px] text-[#454442]">
+                    From
+                  </span>
+                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
+                    <span>Ikeja bus stop, Under Bridge</span>{" "}
+                    <ArrowRight className="text-gray-600" />
+                  </div>
+                </div>
+                <div className="mb-[48px]">
+                  <span className="font-normal text-[14px] text-[#454442]">
+                    To
+                  </span>
+                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
+                    <span>Agege bus stop, The bridge</span>{" "}
+                    <MapPin className="text-gray-600" />
+                  </div>
                 </div>
               </div>
-              <div className="mb-[48px]">
-                <span className="font-normal text-[14px] text-[#454442]">
-                  To
+              <div className="hidden gap-x-[16px] items-center ml-auto  mt-[24px] mb-[48px]">
+                <span className=" block ml-auto" />
+                <span className="text-[#ACA9A6] text-[14px] leading-[24px]">
+                  check other locations
                 </span>
-                <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
-                  <span>Agege bus stop, The bridge</span>{" "}
-                  <MapPin className="text-gray-600" />
-                </div>
+                <span className="relative">
+                  <Image
+                    src="/images/up_sketch.svg"
+                    alt="up arrow"
+                    width={500}
+                    height={300}
+                    className={cn("w-full h-auto")}
+                  />
+                  <span className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+                    <ChevronUp />
+                  </span>
+                </span>
+                <span className="relative">
+                  <Image
+                    src="/images/up_sketch.svg"
+                    alt="up arrow"
+                    width={500}
+                    height={300}
+                    className={cn("w-full h-auto")}
+                  />
+                  <span className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+                    <ChevronDown />
+                  </span>
+                </span>
               </div>
             </div>
-            <div className="hidden gap-x-[16px] items-center ml-auto  mt-[24px] mb-[48px]">
-              <span className=" block ml-auto" />
-              <span className="text-[#ACA9A6] text-[14px] leading-[24px]">
-                check other locations
-              </span>
-              <span className="relative">
-                <Image
-                  src="/images/up_sketch.svg"
-                  alt="up arrow"
-                  width={500}
-                  height={300}
-                  className={cn("w-full h-auto")}
-                />
-                <span className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
-                  <ChevronUp />
-                </span>
-              </span>
-              <span className="relative">
-                <Image
-                  src="/images/up_sketch.svg"
-                  alt="up arrow"
-                  width={500}
-                  height={300}
-                  className={cn("w-full h-auto")}
-                />
-                <span className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
-                  <ChevronDown />
-                </span>
-              </span>
+            <div className="overflow-x-auto overflow-y-hidden">
+              <div className="min-w-fit flex">
+                {/* Bus Transition */}
+                <div className="group w-[276px] h-[269px] ml-auto relative">
+                  <div className="bg-[#FAE8CF] h-full w-[239px] mx-auto ">
+                    <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
+                      Bus/Danfo
+                    </span>
+                    <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
+                      N1,000
+                    </span>
+                  </div>
+                  <div className="bg-white absolute bottom-[-100px] z-10 h-[100px] w-full ml-auto "></div>
+                  <div className="bg-white absolute top-0 right-0 z-10 h-full w-[20px] ml-auto "></div>
+                  <div className="w-full h-full absolute right-0 bottom-[-100px]">
+                    <Image
+                      src="/images/bus.svg"
+                      alt="Hero Image"
+                      width={1000}
+                      height={1000}
+                      className={cn(
+                        "w-[700px] h-auto transform scale-50 group-hover:scale-110 transition-all translate-y-5 duration-300 ease-in-out"
+                      )}
+                    />
+                  </div>
+                </div>
+                {/* Car Transition */}
+                <div className="group w-[276px] h-[269px] ml-auto relative">
+                  <div className="bg-[#FAE8CF] h-full w-[239px] mx-auto ">
+                    <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
+                      Ride Services
+                    </span>
+                    <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
+                      N5,000
+                    </span>
+                  </div>
+                  <div className="bg-white absolute bottom-[-100px] z-10 h-[100px] w-full ml-auto "></div>
+                  <div className="w-full h-full absolute right-0 bottom-[-135px]">
+                    <Image
+                      src="/images/car.svg"
+                      alt="Hero Image"
+                      width={1000}
+                      height={1000}
+                      className={cn(
+                        "w-[300px] h-auto transform scale-[.55] group-hover:scale-[2.0] group-hover:translate-y-[50px] transition-all translate-y-5 duration-300 ease-in-out"
+                      )}
+                    />
+                  </div>
+                </div>
+                {/* People Transistion */}
+                <div className="group w-[276px] h-[269px] ml-auto overflow-hidden relative">
+                  <div className="absolute top-0 left-0 bottom-0 right-0 flex z-10 justify-center items-center">
+                    <div className="flex min-w-1/2 bg-[#ffffff] flex-col justify-center items-center gap-y-[2px] p-[16px]">
+                      <span className="text-secondary text-[16px] font-normal">
+                        Conductor.ng
+                      </span>
+                      <span className="text-secondary text-[40px] font-bold">
+                        N1,200
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-[476px]  h-[269px] transform group-hover:translate-x-[-200px] transition-all duration-[700ms] ease-in-out">
+                    <Image
+                      src="/images/people.jpg"
+                      alt="Hero Image"
+                      width={1000}
+                      height={1000}
+                      className={cn("w-full h-[269px]")}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="overflow-x-auto overflow-y-hidden">
-            <div className="min-w-fit flex">
-              {/* Bus Transition */}
-              <div className="group w-[276px] h-[269px] ml-auto relative">
-                <div className="bg-[#FAE8CF] h-full w-[239px] mx-auto ">
-                  <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
-                    Bus/Danfo
+        )}
+        {currentPage === "driver" && (
+          <div className="md:hidden grid grid-cols-1">
+            <div className="relative">
+              <div className="h-fit">
+                <div className="mb-[40px]">
+                  <span className="font-normal text-[14px] text-[#454442]">
+                    From
                   </span>
-                  <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
-                    N1,000
-                  </span>
+                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
+                    <span>Ikeja bus stop, Under Bridge</span>{" "}
+                    <ArrowRight className="text-gray-600" />
+                  </div>
                 </div>
-                <div className="bg-white absolute bottom-[-100px] z-10 h-[100px] w-full ml-auto "></div>
-                <div className="bg-white absolute top-0 right-0 z-10 h-full w-[20px] ml-auto "></div>
-                <div className="w-full h-full absolute right-0 bottom-[-100px]">
-                  <Image
-                    src="/images/bus.svg"
-                    alt="Hero Image"
-                    width={1000}
-                    height={1000}
-                    className={cn(
-                      "w-[700px] h-auto transform scale-50 group-hover:scale-110 transition-all translate-y-5 duration-300 ease-in-out"
-                    )}
-                  />
+                <div className="mb-[48px]">
+                  <span className="font-normal text-[14px] text-[#454442]">
+                    To
+                  </span>
+                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
+                    <span>Agege bus stop, The bridge</span>{" "}
+                    <MapPin className="text-gray-600" />
+                  </div>
                 </div>
               </div>
-              {/* Car Transition */}
-              <div className="group w-[276px] h-[269px] ml-auto relative">
-                <div className="bg-[#FAE8CF] h-full w-[239px] mx-auto ">
-                  <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
-                    Ride Services
-                  </span>
-                  <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
-                    N5,000
-                  </span>
-                </div>
-                <div className="bg-white absolute bottom-[-100px] z-10 h-[100px] w-full ml-auto "></div>
-                <div className="w-full h-full absolute right-0 bottom-[-135px]">
+              <div className="hidden gap-x-[16px] items-center ml-auto  mt-[24px] mb-[48px]">
+                <span className=" block ml-auto" />
+                <span className="text-[#ACA9A6] text-[14px] leading-[24px]">
+                  check other locations
+                </span>
+                <span className="relative">
                   <Image
-                    src="/images/car.svg"
-                    alt="Hero Image"
-                    width={1000}
-                    height={1000}
-                    className={cn(
-                      "w-[300px] h-auto transform scale-[.55] group-hover:scale-[2.0] group-hover:translate-y-[50px] transition-all translate-y-5 duration-300 ease-in-out"
-                    )}
+                    src="/images/up_sketch.svg"
+                    alt="up arrow"
+                    width={500}
+                    height={300}
+                    className={cn("w-full h-auto")}
                   />
-                </div>
+                  <span className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+                    <ChevronUp />
+                  </span>
+                </span>
+                <span className="relative">
+                  <Image
+                    src="/images/up_sketch.svg"
+                    alt="up arrow"
+                    width={500}
+                    height={300}
+                    className={cn("w-full h-auto")}
+                  />
+                  <span className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+                    <ChevronDown />
+                  </span>
+                </span>
               </div>
-              {/* People Transistion */}
-              <div className="group w-[276px] h-[269px] ml-auto overflow-hidden relative">
-                <div className="absolute top-0 left-0 bottom-0 right-0 flex z-10 justify-center items-center">
-                  <div className="flex min-w-1/2 bg-[#ffffff] flex-col justify-center items-center gap-y-[2px] p-[16px]">
-                    <span className="text-secondary text-[16px] font-normal">
-                      Conductor.ng
+            </div>
+            <div className="overflow-x-auto overflow-y-hidden">
+              <div className="min-w-fit flex">
+                {/* step 1 */}
+                <div className="group w-[276px] h-[269px] ml-auto relative">
+                  <div
+                    className="h-full w-[239px] mx-auto "
+                    style={{
+                      background: "url(/images/daily.png)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  >
+                    <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
+                      Daily Earnings
                     </span>
-                    <span className="text-secondary text-[40px] font-bold">
-                      N1,200
+                    <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
+                      N1,000
                     </span>
                   </div>
                 </div>
-                <div className="w-[476px]  h-[269px] transform group-hover:translate-x-[-200px] transition-all duration-[700ms] ease-in-out">
-                  <Image
-                    src="/images/people.jpg"
-                    alt="Hero Image"
-                    width={1000}
-                    height={1000}
-                    className={cn("w-full h-[269px]")}
-                  />
+                {/* step 2 */}
+                <div className="group w-[276px] h-[269px] ml-auto relative">
+                  <div
+                    className="h-full w-[239px] mx-auto "
+                    style={{
+                      background: "url(/images/daily2.png)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  >
+                    <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
+                      Weekly Earnings
+                    </span>
+                    <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
+                      N5,000
+                    </span>
+                  </div>
+                  <div className="bg-white absolute bottom-[-100px] z-10 h-[100px] w-full ml-auto "></div>
+                </div>
+                {/* step 3*/}
+                <div className="group w-[276px] h-[269px] ml-auto relative">
+                  <div
+                    className="h-full w-[239px] mx-auto "
+                    style={{
+                      background: "url(/images/daily3.png)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  >
+                    <span className="block mx-auto w-fit pt-[32px] font-normal text-[16px] text-secondary">
+                      Monthly Earnings
+                    </span>
+                    <span className="block mx-auto w-fit mt-[8px] font-extrabold text-[40px] text-secondary">
+                      N20,000
+                    </span>
+                  </div>
+                  <div className="bg-white absolute bottom-[-100px] z-10 h-[100px] w-full ml-auto "></div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
         <Link href="#scan">
           <button className="ml-auto mt-2 md:flex hidden items-center space-x-[10px] py-[15px] px-[29px] font-medium text-tertiary text-16px]">
             <span className="underline decoration-tertiary/50">
