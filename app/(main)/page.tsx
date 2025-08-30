@@ -44,7 +44,7 @@ const Home: React.FC = () => {
         </div>
       </section>
       {/* What we are about */}
-      <section className="md:mt-[160px] mt-[96px] max-w-[1300px] mx-auto">
+      <section className="md:mt-[120px] mt-[96px] max-w-[1300px] mx-auto">
         <div className="md:px-0 px-[24px]">
           <WhatWeAreAbout />
         </div>
@@ -59,19 +59,20 @@ const Home: React.FC = () => {
         </div>
       </section>
       {/* How it works */}
-      <section className="md:mt-[131px] mt-[96px] max-w-[1300px] mx-auto">
+      <section className="md:mt-[91px] mt-[96px] max-w-[1300px] mx-auto">
         <div className="md:px-0 px-[24px]">
           <HowItWorks />
         </div>
       </section>
       {/* Is It Safe */}
-      <section className="md:mt-[288px] mt-[120px]  max-w-[1300px] mx-auto md:pb-[157px] pb-[96px]">
+      <section className="md:mt-[288px] mt-[120px]  max-w-[1300px] mx-auto">
         <div className="md:px-0 px-[24px]">
           <IsSafe />
         </div>
       </section>
 
       {/* scan */}
+      <div id="scan" className="md:pb-[157px] pb-[96px]"></div>
       <section className="bg-[#f0efed]">
         <div className="md:px-0 px-[24px]" id="scan">
           <Scan />

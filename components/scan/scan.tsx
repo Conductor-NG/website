@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import { useAppSelector } from "@/lib/redux/hooks";
@@ -59,14 +60,21 @@ const returnUrl = (
   return "";
 };
 
-const Scan = () => {
+const Scan = ({ text }: { text?: string }) => {
   const currentPage = useAppSelector((state) => state.onScrollSlice.page);
   return (
     <div className="max-w-[1300px] mx-auto md:flex items-center justify-between md:h-[364px] md:pb-0 pb-[32px]">
       <div className="max-w-[540px]">
-        <h2 className="font-medium md:text-[40px] text-[20px] mb-[32px] md:text-left text-center md:pt-0 pt-[32px]">
-          Want to download? <span className="text-tertiary">Just scan!</span>
-        </h2>
+        {text === "privacy-policy" ? (
+          <h2 className="font-medium md:text-[40px] text-[24px] mb-[32px] md:text-left text-center md:pt-0 pt-[32px]">
+            A Comfortable and <span className="text-tertiary">affordable </span>
+            way to ride
+          </h2>
+        ) : (
+          <h2 className="font-medium md:text-[40px] text-[20px] mb-[32px] md:text-left text-center md:pt-0 pt-[32px]">
+            Want to download? <span className="text-tertiary">Just scan!</span>
+          </h2>
+        )}
         <p className="md:block hidden max-w-[481px] font-normal text-[16px] leading-[1.8]">
           You can simply turn on your phone camera and place it over the QR
           codes below, click the link that appears

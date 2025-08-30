@@ -14,7 +14,7 @@ const TermsAndConditions = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
-        <div className="bg-[var(--secondary-color)] pt-32 text-white rounded-md  mb-3">
+        <div className="bg-[var(--secondary-color)] pt-0 text-white rounded-md  mb-3">
           <div className="container mx-auto px-4 py-6">
             <Link
               href="/"

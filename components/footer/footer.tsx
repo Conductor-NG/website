@@ -23,7 +23,7 @@ const Footer = () => {
       <div className="max-w-[1300px] mx-auto pt-[64px] mb-[39px]">
         <div className="md:flex justify-between pb-[64px]">
           <div className="md:mb-0 mb-[48px]">
-            <div className="w-[fit-content] mr-auto">
+            <div className="md:w-[fit-content] w-full mr-auto">
               <span
                 className={cn(
                   `${roboto.className}`,
@@ -32,14 +32,14 @@ const Footer = () => {
               >
                 Join the Waitlist
               </span>
-              <h2 className="font-medium max-w-[319px] text-[32px] text-white mb-[32px] leading-[1.2]">
+              <h2 className="font-medium md:max-w-[319px] md:text-[32px] text-[20px] text-white mb-[32px] leading-[1.2]">
                 Be among the first! <br /> Be Part of the Journey
               </h2>
               <div className="flex gap-x-[16px]">
                 <input
                   type="text"
                   placeholder="Enter your email here"
-                  className="bg-[#211e1c] placeholder:text-[#63605e] h-[52px] w-[319px] pl-[16px] border-[#E6E5E3]/20 border-[0.2px]"
+                  className="bg-[#211e1c] placeholder:text-[#63605e] h-[52px] md:w-[319px] w-full pl-[16px] border-[#E6E5E3]/20 border-[0.2px]"
                 />
                 <button className="w-[55px] flex justify-center items-center bg-[#f8d9de]">
                   <ArrowRight />
@@ -60,10 +60,10 @@ const Footer = () => {
                     </li>
                   ))}
                   <li className="md:hidden">
-                    <Link href="">Terms of Service</Link>
+                    <Link href="/terms-and-conditions">Terms of Service</Link>
                   </li>
                   <li className="md:hidden">
-                    <Link href="">Privacy policy</Link>
+                    <Link href="/privacy-policy">Privacy policy</Link>
                   </li>
                 </ul>
               </div>
@@ -145,10 +145,16 @@ const Footer = () => {
               </span>
             </div>
             <div className="hidden max-w-[418px] md:flex gap-x-[40px] ml-auto text-[#ACA9A6] font-extralight text-[16px]">
-              <Link href="" className="decoration-[#ACA9A6] underline">
+              <Link
+                href="/terms-and-conditions"
+                className="decoration-[#ACA9A6] underline"
+              >
                 Terms of service
               </Link>
-              <Link href="" className="decoration-[#ACA9A6] underline">
+              <Link
+                href="/privacy-policy"
+                className="decoration-[#ACA9A6] underline"
+              >
                 Privacy policy
               </Link>
               <span>{dt.getFullYear()} Conductor.ng</span>
