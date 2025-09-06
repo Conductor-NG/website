@@ -25,7 +25,7 @@ const TermsAndConditions = () => {
             </Link>
             <div className="flex items-center mb-2">
               <Shield className="mr-3 h-8 w-8" />
-              <h1 className="text-3xl md:text-4xl font-bold">
+              <h1 className="text-2xl md:text-4xl font-bold">
                 Terms and Conditions
               </h1>
             </div>

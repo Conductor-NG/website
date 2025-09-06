@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 html,
 body {
   scroll-behavior: smooth;
@@ -16,7 +14,10 @@ body {
   margin: 0;
   box-sizing: border-box;
 }
-
+:root {
+  --primary-color: #000;
+  --secondary-color: #ffb21a;
+}
 img {
   width: 100%;
 }

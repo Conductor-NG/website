@@ -63,9 +63,12 @@ const WhatWeAreAboutCard = ({
         />
       </div>
 
-      <button className="flex md:hidden mt-[24px] items-center bg-transparent py-[12px] underline decoration-tertiary/20 font-medium text-tertiary">
-        <span>{buttonText}</span> <ChevronRight className="h-[14px]" />
-      </button>
+      <Link href="#scan">
+        {" "}
+        <button className="flex md:hidden mt-[24px] items-center bg-transparent py-[12px] underline decoration-tertiary/20 font-medium text-tertiary">
+          <span>{buttonText}</span> <ChevronRight className="h-[14px]" />
+        </button>
+      </Link>
     </div>
   );
 };
