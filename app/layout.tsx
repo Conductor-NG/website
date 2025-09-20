@@ -27,7 +27,7 @@ export default function RootLayout({
           <div className="fixed top-0 right-0 left-0 bg-white z-50">
             <NavBar />
           </div>
-          <div className="mt-[160px]">{children}</div>
+          <div className="mt-[150px]">{children}</div>
         </ReduxProvider>
       </body>
     </html>

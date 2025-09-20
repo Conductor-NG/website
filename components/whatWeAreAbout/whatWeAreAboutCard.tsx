@@ -26,7 +26,7 @@ const WhatWeAreAboutCard = ({
   return (
     <div
       className={cn(
-        "flex flex-col md:mt-[160px]  justify-between",
+        "flex flex-col md:mt-[160px]  justify-between ",
         `${position % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"}`
       )}
     >
@@ -41,14 +41,14 @@ const WhatWeAreAboutCard = ({
             {span}
           </span>
         ) : null}
-        <h2 className="font-medium md:text-[40px] text-[24px] text-secondary md:mb-[40px] mb-[24px]">
+        <h2 className="font-medium md:text-[40px] text-[24px] text-secondary md:mb-[27px] mb-[24px] md:leading-[40px]">
           {title}
         </h2>
         <p className="max-w-[452px] font-light text-secondary md:text-[16px] text-[14px] leading-[1.8]">
           {description}
         </p>
         <Link href="#scan">
-          <button className="md:flex hidden mt-[24px] items-center bg-transparent py-[12px] underline decoration-tertiary/20 font-medium text-tertiary">
+          <button className="md:flex hidden mt-[24px] items-center bg-transparent py-[4px] underline decoration-tertiary/20 font-medium text-tertiary">
             <span>{buttonText}</span> <ChevronRight className="h-[14px]" />
           </button>
         </Link>
@@ -63,9 +63,9 @@ const WhatWeAreAboutCard = ({
         />
       </div>
 
-      <Link href="#scan">
+      <Link href="#scan" className="flex md:hidden">
         {" "}
-        <button className="flex md:hidden mt-[24px] items-center bg-transparent py-[12px] underline decoration-tertiary/20 font-medium text-tertiary">
+        <button className="mt-[24px] items-center bg-transparent py-[12px] underline decoration-tertiary/20 font-medium text-tertiary">
           <span>{buttonText}</span> <ChevronRight className="h-[14px]" />
         </button>
       </Link>

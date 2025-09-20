@@ -9,7 +9,7 @@ const HeroCard = ({ heading, content }: HeroContent) => {
       <div className="font-medium md:text-[48px] text-[32px] text-center leading-[1.2] text-secondary mt-[24px]">
         {heading}
       </div>
-      <div className="max-w-[551px] mx-auto font-normal leading-[1.7] text-secondary text-center mt-[24px]">
+      <div className="max-w-[551px] mx-auto font-normal leading-[1.7] text-secondary text-center mt-[14px]">
         {content}
       </div>
       <div className="flex w-fit mx-auto mt-[32px]">
@@ -19,7 +19,7 @@ const HeroCard = ({ heading, content }: HeroContent) => {
           </button>
         </Link>
         <Link href="#price-comparison">
-          <button className="md:flex hidden items-center mr-[12px] bg-transparent py-[12px] underline decoration-tertiary/20 px-[24px] font-medium text-tertiary">
+          <button className="md:flex hidden items-center mr-[12px] bg-transparent py-[12px] underline decoration-tertiary/20  font-medium text-tertiary ml-[34px]">
             <span>See Price Estimate</span>{" "}
             <ChevronRight className="h-[14px]" />
           </button>

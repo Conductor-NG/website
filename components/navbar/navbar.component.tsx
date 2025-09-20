@@ -22,7 +22,7 @@ const NavBar = () => {
       )}
     >
       {/* Desktop */}
-      <ul className=" lg:flex hidden max-w-[1300px] items-center text-[16px] leading-[21px] font-medium text-black bg-white mx-[auto] h-[60px]">
+      <ul className=" lg:flex hidden max-w-[1300px] w-[78%]  items-center text-[16px] leading-[21px] font-medium text-black bg-white mx-[auto] h-[60px]">
         <li className="hover:scale-[1.1]">
           <Link href="/">
             <Image
@@ -36,11 +36,11 @@ const NavBar = () => {
           </Link>
         </li>
 
-        <li className="hover:underline decoration-gray-300  ml-auto mr-[16px]">
+        <li className="hover:underline decoration-gray-300  ml-auto mr-[48px]">
           <Link href="/">FAQs</Link>
         </li>
         <li
-          className="hover:underline decoration-gray-300 mr-[16px] flex gap-1 items-end cursor-pointer"
+          className="hover:underline decoration-gray-300 mr-[30px] flex gap-1 items-end cursor-pointer"
           onClick={() => setToggleContactUs(!toggleContactUs)}
         >
           <span>Contact Us </span> <ChevronDown className="h-[16px]" />
@@ -48,13 +48,13 @@ const NavBar = () => {
         <li>
           {currentPage === "driver" ? (
             <Link href="/">
-              <button className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[16px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[16px] mr-[16px]">
+              <button className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[20px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[16px] mr-[16px]">
                 Conductor.ng for Passengers
               </button>
             </Link>
           ) : (
             <Link href="/driver">
-              <button className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[16px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[16px] mr-[16px]">
+              <button className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[16px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[16px] mr-[20px]">
                 Conductor.ng for Car Owners
               </button>
             </Link>

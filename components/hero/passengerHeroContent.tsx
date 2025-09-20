@@ -6,7 +6,7 @@ const PassengerHeroContent = () => {
     <>
       <HeroCard
         role="Passengers"
-        heading="Relax! we've made comfort affordable for you"
+        heading="Relax! we've made comfort affordable"
         content="Whether it's your workplace or a weekend spot, Conductor.ng gets you there quickly in comfort and without breaking the bank"
       />
       <div className="mt-[64px] w-full h-full rounded-[16px]">
