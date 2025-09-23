@@ -37,7 +37,7 @@ const NavBar = () => {
         </li>
 
         <li className="hover:underline decoration-gray-300  ml-auto mr-[48px]">
-          <Link href="/">FAQs</Link>
+          <Link href="/faq">FAQs</Link>
         </li>
         <li
           className="hover:underline decoration-gray-300 mr-[30px] flex gap-1 items-end cursor-pointer"

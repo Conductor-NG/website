@@ -26,11 +26,20 @@ const WhatWeAreAboutCard = ({
   return (
     <div
       className={cn(
-        "flex flex-col md:mt-[160px]  justify-between ",
-        `${position % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"}`
+        "flex flex-col md:mt-[160px]  justify-between",
+        `${
+          position % 2 === 0
+            ? "md:flex-row-reverse"
+            : "md:flex-row md:space-x-[16px]"
+        }`
       )}
     >
-      <div className="mt-[72px] max-w-[542px]">
+      <div
+        className={cn(
+          "mt-[72px] max-w-[542px]",
+          `${position % 2 === 0 ? "ml-[16px]" : ""}`
+        )}
+      >
         {span ? (
           <span
             className={cn(

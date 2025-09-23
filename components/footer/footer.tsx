@@ -4,11 +4,23 @@ import { Roboto } from "next/font/google";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-type InfoProps = { head: string; links: string[] };
+type InfoProps = { head: string; links: { title: string; href: string }[] };
 
 const info: InfoProps[] = [
-  { head: "Company", links: ["About US", "Our Vision"] },
-  { head: "Support", links: ["FAQs", "Email Us!"] },
+  {
+    head: "Company",
+    links: [
+      { title: "About US", href: "" },
+      { title: "Our Vision", href: "" },
+    ],
+  },
+  {
+    head: "Support",
+    links: [
+      { title: "FAQs", href: "/faq" },
+      { title: "Email Us!", href: "" },
+    ],
+  },
 ];
 
 const roboto = Roboto({
@@ -56,7 +68,7 @@ const Footer = () => {
                 <ul className="flex flex-col gap-y-[40px] text-[#ACA9A6] font-normal text-[14px]">
                   {item.links.map((link, idx) => (
                     <li key={idx}>
-                      <Link href="">{link}</Link>
+                      <Link href={link.href}>{link.title}</Link>
                     </li>
                   ))}
                   <li className="md:hidden">
@@ -162,7 +174,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-auto">
+      <div className="w-full max-h-[100px] overflow-hidden">
         <Image
           className="w-full h-auto"
           src="/images/footer_bg_logo.png"
