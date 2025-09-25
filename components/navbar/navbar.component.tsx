@@ -22,7 +22,7 @@ const NavBar = () => {
       )}
     >
       {/* Desktop */}
-      <ul className=" lg:flex hidden max-w-[1300px] w-[78%]  items-center text-[16px] leading-[21px] font-medium text-black bg-white mx-[auto] h-[60px]">
+      <ul className=" lg:flex hidden max-w-[1120px] w-[78%]  items-center text-[16px] leading-[21px] font-medium text-black bg-white mx-[auto] h-[60px]">
         <li className="hover:scale-[1.1]">
           <Link href="/">
             <Image

@@ -52,7 +52,7 @@ const PrivacyPolicy = () => {
       >
         <ChevronUp className="h-[40px] w-[40px]" />
       </Link>
-      <section className="md:mt-[131px] mt-[96px] md:mb-[29x] max-w-[1300px] mx-auto md:pb-[100px]">
+      <section className="md:mt-[131px] mt-[96px] md:mb-[29x] max-w-[1120px] mx-auto md:pb-[100px]">
         <div className="md:px-0 px-[24px]">
           {/* top */}
           <div className="flex md:flex-row flex-col-reverse mb-[80px]">

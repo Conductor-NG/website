@@ -38,20 +38,20 @@ const Home: React.FC = () => {
       >
         <ChevronUp className="h-[40px] w-[40px]" />
       </Link>
-      <section className="mt-[60px] max-w-[1300px] mx-auto md:w-[78%]">
+      <section className="mt-[60px] max-w-[1120px] mx-auto md:w-[78%]">
         <div className="md:px-0 px-[24px]">
           <PassengerHeroContent />
         </div>
       </section>
       {/* What we are about */}
-      <section className="md:mt-[120px] mt-[96px] max-w-[1300px] mx-auto md:w-[78%]">
+      <section className="md:mt-[120px] mt-[96px] max-w-[1120px] mx-auto md:w-[78%]">
         <div className="md:px-0 px-[24px]">
           <WhatWeAreAbout />
         </div>
       </section>
       {/* Price Comparison */}
       <section
-        className="md:mt-[131px] mt-[96px] md:mb-[29x] max-w-[1300px] mx-auto md:pb-[100px] md:w-[78%]"
+        className="md:mt-[131px] mt-[96px] md:mb-[29x] max-w-[1120px] mx-auto md:pb-[100px] md:w-[78%]"
         id="price-comparison"
       >
         <div className="md:px-0 px-[24px]">
@@ -59,13 +59,13 @@ const Home: React.FC = () => {
         </div>
       </section>
       {/* How it works */}
-      <section className="md:mt-[91px] mt-[96px] max-w-[1300px] mx-auto md:w-[78%]">
+      <section className="md:mt-[91px] mt-[96px] max-w-[1120px] mx-auto md:w-[78%]">
         <div className="md:px-0 px-[24px]">
           <HowItWorks />
         </div>
       </section>
       {/* Is It Safe */}
-      <section className="md:mt-[288px] mt-[120px]  max-w-[1300px] mx-auto md:w-[78%]">
+      <section className="md:mt-[288px] mt-[120px]  max-w-[1120px] mx-auto md:w-[78%]">
         <div className="md:px-0 px-[24px]">
           <IsSafe />
         </div>
@@ -74,17 +74,19 @@ const Home: React.FC = () => {
       {/* scan */}
       <div id="scan" className="md:pb-[157px] pb-[96px]"></div>
       <div className="bg-[#f0efed]">
-        <section className=" md:w-[78%] max-w-[1300px] mx-auto">
+        <section className=" md:w-[78%] max-w-[1120px] mx-auto">
           <div className="md:px-0 px-[24px]" id="scan">
             <Scan />
           </div>
         </section>
       </div>
-      <section className="bg-[#0a0704]">
-        <div className="md:px-0 px-[24px]">
-          <Footer />
-        </div>
-      </section>
+      <div className="bg-[#0a0704]">
+        <section className="md:w-[78%] max-w-[1120px] mx-auto">
+          <div className="md:px-0 px-[24px]">
+            <Footer />
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

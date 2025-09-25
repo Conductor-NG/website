@@ -49,7 +49,7 @@ const PriceComparison = () => {
       <div>
         {/* desktop */}
         {currentPage === "home" && (
-          <div className="md:grid hidden grid-cols-4">
+          <div className="lg:grid hidden grid-cols-4">
             <div className="flex flex-col justify-between ml-auto relative">
               <div>
                 <div className="mb-[40px]">
@@ -284,16 +284,16 @@ const PriceComparison = () => {
             </div>
           </div>
         )}
-        {/* mobile */}
+        {/* mobile and tablet*/}
         {currentPage === "home" && (
-          <div className="md:hidden grid grid-cols-1">
+          <div className="lg:hidden grid grid-cols-1">
             <div className="relative">
               <div className="h-fit">
                 <div className="mb-[40px]">
                   <span className="font-normal text-[14px] text-[#454442]">
                     From
                   </span>
-                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
+                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] lg:w-[278px] w-full bg-[#EFEEEC] mt-2">
                     <span>Ikeja bus stop, Under Bridge</span>{" "}
                     <ArrowRight className="text-gray-600" />
                   </div>
@@ -302,7 +302,7 @@ const PriceComparison = () => {
                   <span className="font-normal text-[14px] text-[#454442]">
                     To
                   </span>
-                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] md:w-[278px] w-full bg-[#EFEEEC] mt-2">
+                  <div className="flex text-secondary font-normal justify-between py-[14px] px-[12px] lg:w-[278px] w-full bg-[#EFEEEC] mt-2">
                     <span>Agege bus stop, The bridge</span>{" "}
                     <MapPin className="text-gray-600" />
                   </div>
@@ -360,7 +360,7 @@ const PriceComparison = () => {
                       width={1000}
                       height={1000}
                       className={cn(
-                        "w-[700px] h-auto transform scale-50 group-hover:scale-110 transition-all translate-y-5 duration-300 ease-in-out"
+                        "w-[700px] h-auto transform scale-[0.7] group-hover:scale-110 transition-all translate-y-5 duration-300 ease-in-out"
                       )}
                     />
                   </div>
@@ -383,7 +383,7 @@ const PriceComparison = () => {
                       width={1000}
                       height={1000}
                       className={cn(
-                        "w-[300px] h-auto transform scale-[.55] group-hover:scale-[2.0] group-hover:translate-y-[50px] transition-all translate-y-5 duration-300 ease-in-out"
+                        "w-[300px] h-auto transform scale-[0.75] group-hover:scale-[2.0] group-hover:translate-y-[50px] transition-all translate-y-5 duration-300 ease-in-out"
                       )}
                     />
                   </div>
@@ -534,8 +534,8 @@ const PriceComparison = () => {
           </div>
         )}
 
-        <Link href="#scan">
-          <button className="ml-auto mt-2 md:flex hidden items-center space-x-[10px] py-[15px] px-[29px] font-medium text-tertiary text-16px]">
+        <Link href="#scan" className="w-[fit-content]  block ml-auto">
+          <button className="w-[fit-content] mt-2 md:flex hidden items-center space-x-[10px] py-[15px] px-[29px] font-medium text-tertiary text-16px]">
             <span className="underline decoration-tertiary/50">
               {currentPage === "home"
                 ? "95% OFF on your next trip"

@@ -37,7 +37,7 @@ const HowItWorksCardOne = ({
                 width={1000}
                 height={1000}
                 className={cn(
-                  "w-[46.5%] h-auto mx-auto group-hover:scale-y-[160%] group-hover:scale-x-[180%] group-hover:translate-y-[-24%] transition-all duration-[300ms] ease-in-out"
+                  "w-[46.5%] h-auto mx-auto group-hover:scale-y-[160%] group-hover:scale-x-[180%] group-hover:translate-y-[-24%] transition-all duration-[300ms] ease-in-out hidden group-hover:block"
                 )}
               />
             </div>

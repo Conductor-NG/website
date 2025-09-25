@@ -56,7 +56,7 @@ const HowItWorksCardTwo = ({
                 />
               </div>
             )}
-            {currentPage === "passenger" && (
+            {currentPage === "home" && (
               <div className="absolute bottom-[11px] w-full">
                 <Image
                   src="/images/trip.svg"
