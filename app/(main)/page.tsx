@@ -93,7 +93,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <footer className="bg-[#0a0704] py-16">
+            <footer className="bg-[#0a0704] pt-16 pb-8">
                 <Footer/>
             </footer>
         </div>
