@@ -4,187 +4,137 @@ import { Roboto } from "next/font/google";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
 type InfoProps = { head: string; links: { title: string; href: string }[] };
 
 const info: InfoProps[] = [
   {
     head: "Company",
     links: [
-      { title: "About US", href: "" },
-      { title: "Our Vision", href: "" },
+      { title: "About Us", href: "/about" },
+      { title: "Our Vision", href: "/vision" },
     ],
   },
   {
     head: "Support",
     links: [
       { title: "FAQs", href: "/faq" },
-      { title: "Email Us!", href: "" },
+      { title: "Email Us!", href: "mailto:support@conductor.ng" },
     ],
   },
 ];
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["100", "400", "500", "700", "800"],
-});
+const socialLinks = [
+  { href: "https://www.facebook.com/...", icon: "facebook.svg", alt: "facebook" },
+  { href: "https://x.com/...", icon: "twitter-x-fill.svg", alt: "x" },
+  { href: "https://www.instagram.com/...", icon: "instagram-fill.svg", alt: "instagram" },
+  { href: "https://www.linkedin.com/...", icon: "linkedin-fill.svg", alt: "linkedin" },
+  { href: "#", icon: "tiktok-fill.svg", alt: "tiktok" },
+];
 
 const Footer = () => {
-  const dt = new Date();
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer>
-      <div className="max-w-[1300px] mx-auto pt-[64px] mb-[39px]">
-        <div className="md:flex justify-between pb-[64px]">
-          <div className="md:mb-0 mb-[48px]">
-            <div className="md:w-[fit-content] w-full mr-auto">
-              <span
-                className={cn(
-                  `${roboto.className}`,
-                  "text-tertiary block bg-[#211e1c] w-[fit-content] mr-auto font-normal text-[16px] py-[8px] px-[16px] rounded-[36px] mb-[32px]"
-                )}
-              >
-                Join the Waitlist
-              </span>
-              <h2 className="font-medium md:max-w-[319px] md:text-[32px] text-[20px] text-white mb-[32px] leading-[1.2]">
+      <footer className="w-full text-white">
+        <div className="max-w-[1300px] mx-auto pt-16 pb-10 px-6 md:px-0">
+          <div className="flex flex-col md:flex-row justify-between pb-16 gap-y-12">
+
+            {/* Waitlist Section */}
+            <div className="flex flex-col items-start max-w-sm">
+            <span className={cn(
+                roboto.className,
+                "text-tertiary bg-[#211e1c] text-sm py-2 px-4 rounded-full mb-8"
+            )}>
+              Join the Waitlist
+            </span>
+              <h2 className="text-xl md:text-3xl font-medium mb-8 leading-tight">
                 Be among the first! <br /> Be Part of the Journey
               </h2>
-              <div className="flex gap-x-[16px]">
+              <div className="flex w-full h-[52px]">
                 <input
-                  type="text"
-                  placeholder="Enter your email here"
-                  className="bg-[#211e1c] placeholder:text-[#63605e] h-[52px] md:w-[319px] w-full pl-[16px] border-[#E6E5E3]/20 border-[0.2px]"
+                    type="email"
+                    placeholder="Enter your email here"
+                    className="flex-1 bg-[#211e1c] placeholder:text-[#63605e] px-4 border border-white/10 outline-none focus:border-tertiary/50 transition-colors"
                 />
-                <button className="w-[55px] flex justify-center items-center bg-[#f8d9de]">
-                  <ArrowRight />
+                <button className="w-14 flex justify-center items-center bg-[#f8d9de] text-black hover:bg-[#f2c5cc] transition-colors">
+                  <ArrowRight size={20} />
                 </button>
               </div>
             </div>
-          </div>
-          <div className="md:flex gap-x-[57px]">
-            {info.map((item, index) => (
-              <div key={index} className="md:mt-0 mt-[40px] ">
-                <h3 className="text-white mb-[40px] font-normal text-[16px]">
-                  {item.head}
-                </h3>
-                <ul className="flex flex-col gap-y-[40px] text-[#ACA9A6] font-normal text-[14px]">
-                  {item.links.map((link, idx) => (
-                    <li key={idx}>
-                      <Link href={link.href}>{link.title}</Link>
-                    </li>
-                  ))}
-                  <li className="md:hidden">
-                    <Link href="/terms-and-conditions">Terms of Service</Link>
-                  </li>
-                  <li className="md:hidden">
-                    <Link href="/privacy-policy">Privacy policy</Link>
-                  </li>
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div>
-          <div className="flex h-[96px] items-end md:border-t-[0.2px] md:border-[#E6E5E3]/20">
-            <div className="h-[32px] flex md:justify-start justify-between md:w-fit w-full gap-x-[32px] items-center">
-              <span>
-                <Link href="/">
-                  <Image
-                    className="w-[64px] h-full"
-                    src="/images/footer_logo.svg"
-                    alt="logo image"
-                    width={746}
-                    height={396}
-                    priority
-                  />
-                </Link>
-              </span>
-              <span>
-                <Link href="https://www.facebook.com/profile.php?id=61574617154383">
-                  <Image
-                    className="w-[18px] h-[18px]"
-                    src="/images/facebook.svg"
-                    alt="facebook"
-                    width={746}
-                    height={396}
-                    priority
-                  />
-                </Link>
-              </span>
-              <span>
-                <Link href="https://x.com/conducterng?t=LW4ISF3V7VAGQ_I7p7Pvdw&s=08 ">
-                  <Image
-                    className="w-[18px] h-[18px]"
-                    src="/images/twitter-x-fill.svg"
-                    alt="x.com"
-                    width={746}
-                    height={396}
-                    priority
-                  />
-                </Link>
-              </span>
-              <span>
-                <Link href="https://www.instagram.com/conductornaija?utm_source=ig_web_button_share_sheet&igsh=Z29vNGxscjBlYXJ4">
-                  <Image
-                    className="w-[18px] h-[18px]"
-                    src="/images/instagram-fill.svg"
-                    alt="instagram"
-                    width={746}
-                    height={396}
-                    priority
-                  />
-                </Link>
-              </span>
-              <span>
-                <Link href="https://www.linkedin.com/company/conductor-nigeria/?viewAsMember=true">
-                  <Image
-                    className="w-[18px] h-[18px]"
-                    src="/images/linkedin-fill.svg"
-                    alt="linkedin"
-                    width={746}
-                    height={396}
-                    priority
-                  />
-                </Link>
-              </span>
-              <span>
-                <Image
-                  className="w-[18px] h-[18px]"
-                  src="/images/tiktok-fill.svg"
-                  alt="tiktok"
-                  width={746}
-                  height={396}
-                  priority
-                />
-              </span>
+
+            {/* Links Grid */}
+            <div className="flex gap-x-14 md:gap-x-20">
+              {info.map((item, index) => (
+                  <div key={index}>
+                    <h3 className="text-base font-medium mb-8 uppercase tracking-wider text-white/90">
+                      {item.head}
+                    </h3>
+                    <ul className="flex flex-col gap-y-6 text-[#ACA9A6] text-sm">
+                      {item.links.map((link, idx) => (
+                          <li key={idx}>
+                            <Link href={link.href} className="hover:text-white transition-colors">
+                              {link.title}
+                            </Link>
+                          </li>
+                      ))}
+                      {/* Mobile-only links inside the first list to save space */}
+                      {index === 0 && (
+                          <>
+                            <li className="md:hidden"><Link href="/terms-and-conditions">Terms of Service</Link></li>
+                            <li className="md:hidden"><Link href="/privacy-policy">Privacy Policy</Link></li>
+                          </>
+                      )}
+                    </ul>
+                  </div>
+              ))}
             </div>
-            <div className="hidden max-w-[418px] md:flex gap-x-[40px] ml-auto text-[#ACA9A6] font-extralight text-[16px]">
-              <Link
-                href="/terms-and-conditions"
-                className="decoration-[#ACA9A6] underline"
-              >
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-y-8">
+            <div className="flex items-center gap-x-8 w-full md:w-auto justify-between md:justify-start">
+              <Link href="/">
+                <Image src="/images/footer_logo.svg" alt="logo" width={64} height={32} />
+              </Link>
+              <div className="flex gap-x-5">
+                {socialLinks.map((social, i) => (
+                    <Link key={i} href={social.href} className="opacity-70 hover:opacity-100 transition-opacity">
+                      <Image src={`/images/${social.icon}`} alt={social.alt} width={18} height={18} />
+                    </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="hidden md:flex gap-x-10 text-[#ACA9A6] text-sm font-light">
+              <Link href="/terms-and-conditions" className="underline decoration-white/20 hover:text-white">
                 Terms of service
               </Link>
-              <Link
-                href="/privacy-policy"
-                className="decoration-[#ACA9A6] underline"
-              >
+              <Link href="/privacy-policy" className="underline decoration-white/20 hover:text-white">
                 Privacy policy
               </Link>
-              <span>{dt.getFullYear()} Conductor.ng</span>
+              <span>© {currentYear} Conductor.ng</span>
             </div>
+
+            <span className="md:hidden text-xs text-[#ACA9A6]">© {currentYear} Conductor.ng</span>
           </div>
         </div>
-      </div>
-      <div className="w-full max-h-[100px] overflow-hidden">
-        <Image
-          className="w-full h-auto"
-          src="/images/footer_bg_logo.png"
-          alt="footer background logo"
-          width={746}
-          height={396}
-          priority
-        />
-      </div>
-    </footer>
+
+        {/* Decorative Background Image */}
+        <div className="w-full h-auto overflow-hidden leading-[0]">
+          <Image
+              className="w-full h-auto object-cover opacity-80"
+              src="/images/footer_bg_logo.png"
+              alt=""
+              width={1440}
+              height={100}
+          />
+        </div>
+      </footer>
   );
 };
 

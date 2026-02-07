@@ -1,7 +1,12 @@
 "use client";
-import { useAppDispatch } from "@/lib/redux/hooks";
+
+import {PropsWithChildren, useEffect} from "react";
+import Link from "next/link";
 import { ChevronUp } from "lucide-react";
+
+import { useAppDispatch } from "@/lib/redux/hooks";
 import { setOnScroll, setPage } from "@/lib/redux/slices/onSrcollSlice";
+
 import { PassengerHeroContent } from "@/components/hero";
 import WhatWeAreAbout from "@/components/whatWeAreAbout/whatWeAreAbout";
 import PriceComparison from "@/components/priceComparison/priceComparison";
@@ -9,86 +14,92 @@ import HowItWorks from "@/components/howItWorks/howItWorks";
 import IsSafe from "@/components/isSafe/isSafe";
 import Scan from "@/components/scan/scan";
 import Footer from "@/components/footer/footer";
-import { useEffect } from "react";
-import Link from "next/link";
+import UserCampaign from "@/components/campaign/UserCampaign";
+
+type Props = PropsWithChildren<{
+    className?: string;
+    id?: string;
+}>;
+
+
+// Reusable Layout Wrapper to ensure consistent spacing and width
+const SectionWrapper = ({ children, className, id }: Props) => (
+    <section id={id} className={`max-w-[1120px] mx-auto md:w-[78%] px-6 md:px-0 ${className}`}>
+        {children}
+    </section>
+);
 
 const Home: React.FC = () => {
-  const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(setPage("home"));
-  }, [dispatch]);
+    useEffect(() => {
+        dispatch(setPage("home"));
+    }, [dispatch]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      dispatch(setOnScroll(window.scrollY));
-    };
+    useEffect(() => {
+        const handleScroll = () => {
+            dispatch(setOnScroll(window.scrollY));
+        };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [dispatch]);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [dispatch]);
 
-  return (
-    <div className="relative" id="top">
-      <Link
-        href="#top"
-        className="md:hidden fixed bottom-[30px] right-[24px] bg-white/20 backdrop-blur-md border border-white/20 shadow-md rounded-full z-50"
-      >
-        <ChevronUp className="h-[40px] w-[40px]" />
-      </Link>
-      <section className="mt-[60px] max-w-[1120px] mx-auto md:w-[78%]">
-        <div className="md:px-0 px-[24px]">
-          <PassengerHeroContent />
-        </div>
-      </section>
-      {/* What we are about */}
-      <section className="md:mt-[120px] mt-[96px] max-w-[1120px] mx-auto md:w-[78%]">
-        <div className="md:px-0 px-[24px]">
-          <WhatWeAreAbout />
-        </div>
-      </section>
-      {/* Price Comparison */}
-      <section
-        className="md:mt-[131px] mt-[96px] md:mb-[29x] max-w-[1120px] mx-auto md:pb-[100px] md:w-[78%]"
-        id="price-comparison"
-      >
-        <div className="md:px-0 px-[24px]">
-          <PriceComparison />
-        </div>
-      </section>
-      {/* How it works */}
-      <section className="md:mt-[91px] mt-[96px] max-w-[1120px] mx-auto md:w-[78%]">
-        <div className="md:px-0 px-[24px]">
-          <HowItWorks />
-        </div>
-      </section>
-      {/* Is It Safe */}
-      <section className="md:mt-[288px] mt-[120px]  max-w-[1120px] mx-auto md:w-[78%]">
-        <div className="md:px-0 px-[24px]">
-          <IsSafe />
-        </div>
-      </section>
+    return (
+        <div className="relative scroll-smooth" id="top">
+            {/* Scroll to Top Button */}
+            <Link
+                href="#top"
+                className="fixed bottom-8 right-6 z-50 flex items-center justify-center h-12 w-12 bg-white/20 backdrop-blur-md border border-white/20 shadow-lg rounded-full md:hidden transition-all hover:bg-white/30"
+            >
+                <ChevronUp className="h-8 w-8 text-current" />
+            </Link>
 
-      {/* scan */}
-      <div id="scan" className="md:pb-[157px] pb-[96px]"></div>
-      <div className="bg-[#f0efed]">
-        <section className=" md:w-[78%] max-w-[1120px] mx-auto">
-          <div className="md:px-0 px-[24px]" id="scan">
-            <Scan />
-          </div>
-        </section>
-      </div>
-      <div className="bg-[#0a0704]">
-        <section className="md:w-[78%] max-w-[1120px] mx-auto">
-          <div className="md:px-0 px-[24px]">
-            <Footer />
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+            {/* Hero Section */}
+            <SectionWrapper className="mt-[60px]">
+                <PassengerHeroContent />
+            </SectionWrapper>
+
+            {/* About Section */}
+            <SectionWrapper className="mt-24 md:mt-32">
+                <WhatWeAreAbout />
+            </SectionWrapper>
+
+            {/* Price Comparison */}
+            <SectionWrapper id="price-comparison" className="mt-24 md:mt-32">
+                <PriceComparison />
+            </SectionWrapper>
+
+            {/* How It Works */}
+            <SectionWrapper className="mt-24 md:mt-32">
+                <HowItWorks />
+            </SectionWrapper>
+
+            {/* Campaign Section - Full width variation if needed, otherwise use wrapper */}
+            <SectionWrapper className="mt-24 md:mt-48">
+                <UserCampaign />
+            </SectionWrapper>
+
+            {/* Safety Section */}
+            <SectionWrapper className="mt-24 md:mt-32">
+                <IsSafe />
+            </SectionWrapper>
+
+            {/* Scan Section */}
+            <div id="scan" className="mt-24 md:mt-32 bg-[#f0efed] py-20">
+                <SectionWrapper>
+                    <Scan />
+                </SectionWrapper>
+            </div>
+
+            {/* Footer */}
+            <footer className="bg-[#0a0704] py-16">
+                <SectionWrapper>
+                    <Footer />
+                </SectionWrapper>
+            </footer>
+        </div>
+    );
 };
 
 export default Home;

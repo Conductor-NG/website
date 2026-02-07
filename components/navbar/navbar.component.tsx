@@ -7,7 +7,7 @@ import {useAppSelector} from "@/lib/redux/hooks";
 import "./navbar.styles.css";
 import {cn} from "@/app/utils";
 import {useState} from "react";
-// import { store } from "@/lib/redux/store";
+
 const NavBar = () => {
     const scrollY = useAppSelector((state) => state.onScrollSlice.value);
     const currentPage = useAppSelector((state) => state.onScrollSlice.page);
@@ -26,7 +26,7 @@ const NavBar = () => {
                 <li className="hover:scale-[1.1]">
                     <Link href="/">
                         <Image
-                            className="md:w-[40px] w-[32px] md:h-[40px] h-[32px]"
+                            className="w-[28px] h-[28px] md:w-[30px] md:h-[30px]"
                             src="/images/conductor.svg"
                             alt="Conductor logo"
                             width={48}
@@ -148,7 +148,7 @@ const NavBar = () => {
           <span className="hover:scale-[1.1] ">
             <Link href="/">
               <Image
-                  className="md:w-[40px] w-[32px] md:h-[40px] h-[32px]"
+                  className="w-[28px] h-[28px] md:w-[30px] md:h-[30px]"
                   src="/images/conductor.svg"
                   alt="Conductor logo"
                   width={40}
