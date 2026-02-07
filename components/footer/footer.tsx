@@ -41,7 +41,7 @@ const Footer = () => {
 
   return (
       <footer className="w-full text-white">
-        <div className="max-w-[1300px] mx-auto pt-16 pb-10 px-6 md:px-0">
+        <div className="max-w-[1120px] mx-auto md:w-[78%] px-6 md:px-0 pt-16 pb-10">
           <div className="flex flex-col md:flex-row justify-between pb-16 gap-y-12">
 
             {/* Waitlist Section */}
@@ -125,13 +125,14 @@ const Footer = () => {
         </div>
 
         {/* Decorative Background Image */}
-        <div className="w-full h-auto overflow-hidden leading-[0]">
+        <div className="relative w-screen">
           <Image
-              className="w-full h-auto object-cover opacity-80"
-              src="/images/footer_bg_logo.png"
+              src="/images/footer_bg_logo2.png"
               alt=""
-              width={1440}
-              height={100}
+              width={1064}
+              height={64}
+              className="object-cover object-top pointer-events-none w-screen h-40 brightness-150"
+              priority
           />
         </div>
       </footer>

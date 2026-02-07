@@ -2,12 +2,12 @@
 
 import {PropsWithChildren, useEffect} from "react";
 import Link from "next/link";
-import { ChevronUp } from "lucide-react";
+import {ChevronUp} from "lucide-react";
 
-import { useAppDispatch } from "@/lib/redux/hooks";
-import { setOnScroll, setPage } from "@/lib/redux/slices/onSrcollSlice";
+import {useAppDispatch} from "@/lib/redux/hooks";
+import {setOnScroll, setPage} from "@/lib/redux/slices/onSrcollSlice";
 
-import { PassengerHeroContent } from "@/components/hero";
+import {PassengerHeroContent} from "@/components/hero";
 import WhatWeAreAbout from "@/components/whatWeAreAbout/whatWeAreAbout";
 import PriceComparison from "@/components/priceComparison/priceComparison";
 import HowItWorks from "@/components/howItWorks/howItWorks";
@@ -23,7 +23,7 @@ type Props = PropsWithChildren<{
 
 
 // Reusable Layout Wrapper to ensure consistent spacing and width
-const SectionWrapper = ({ children, className, id }: Props) => (
+const SectionWrapper = ({children, className, id}: Props) => (
     <section id={id} className={`max-w-[1120px] mx-auto md:w-[78%] px-6 md:px-0 ${className}`}>
         {children}
     </section>
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
             dispatch(setOnScroll(window.scrollY));
         };
 
-        window.addEventListener("scroll", handleScroll, { passive: true });
+        window.addEventListener("scroll", handleScroll, {passive: true});
         return () => window.removeEventListener("scroll", handleScroll);
     }, [dispatch]);
 
@@ -52,51 +52,49 @@ const Home: React.FC = () => {
                 href="#top"
                 className="fixed bottom-8 right-6 z-50 flex items-center justify-center h-12 w-12 bg-white/20 backdrop-blur-md border border-white/20 shadow-lg rounded-full md:hidden transition-all hover:bg-white/30"
             >
-                <ChevronUp className="h-8 w-8 text-current" />
+                <ChevronUp className="h-8 w-8 text-current"/>
             </Link>
 
             {/* Hero Section */}
             <SectionWrapper className="mt-[60px]">
-                <PassengerHeroContent />
+                <PassengerHeroContent/>
             </SectionWrapper>
 
             {/* About Section */}
             <SectionWrapper className="mt-24 md:mt-32">
-                <WhatWeAreAbout />
+                <WhatWeAreAbout/>
             </SectionWrapper>
 
             {/* Price Comparison */}
             <SectionWrapper id="price-comparison" className="mt-24 md:mt-32">
-                <PriceComparison />
+                <PriceComparison/>
             </SectionWrapper>
 
             {/* How It Works */}
             <SectionWrapper className="mt-24 md:mt-32">
-                <HowItWorks />
+                <HowItWorks/>
             </SectionWrapper>
 
             {/* Campaign Section - Full width variation if needed, otherwise use wrapper */}
             <SectionWrapper className="mt-24 md:mt-48">
-                <UserCampaign />
+                <UserCampaign/>
             </SectionWrapper>
 
             {/* Safety Section */}
             <SectionWrapper className="mt-24 md:mt-32">
-                <IsSafe />
+                <IsSafe/>
             </SectionWrapper>
 
             {/* Scan Section */}
             <div id="scan" className="mt-24 md:mt-32 bg-[#f0efed] py-20">
                 <SectionWrapper>
-                    <Scan />
+                    <Scan/>
                 </SectionWrapper>
             </div>
 
             {/* Footer */}
             <footer className="bg-[#0a0704] py-16">
-                <SectionWrapper>
-                    <Footer />
-                </SectionWrapper>
+                <Footer/>
             </footer>
         </div>
     );

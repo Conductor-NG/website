@@ -76,7 +76,7 @@ const Home: React.FC = () => {
             </SectionWrapper>
 
             {/*Campaign*/}
-            <SectionWrapper className="mt-24 md:mt-32">
+            <SectionWrapper className="mt-24 md:mt-48">
                 <DriverCampaign/>
             </SectionWrapper>
 
@@ -93,10 +93,8 @@ const Home: React.FC = () => {
             </div>
 
             {/* Footer with Background */}
-            <footer className="bg-[#0a0704] py-16">
-                <SectionWrapper>
-                    <Footer/>
-                </SectionWrapper>
+            <footer className="bg-[#0a0704] pt-16">
+                <Footer/>
             </footer>
         </div>
     );
