@@ -99,12 +99,12 @@ const Footer = () => {
           <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-y-8">
             <div className="flex items-center gap-x-8 w-full md:w-auto justify-between md:justify-start">
               <Link href="/">
-                <Image src="/images/footer_logo.svg" alt="logo" width={64} height={32} />
+                <Image src="/images/conductor.svg" alt="logo" width={50} height={52} className="w-[28px] h-[28px] md:w-[50px] md:h-[50px]" />
               </Link>
               <div className="flex gap-x-5">
                 {socialLinks.map((social, i) => (
                     <Link key={i} href={social.href} className="opacity-70 hover:opacity-100 transition-opacity">
-                      <Image src={`/images/${social.icon}`} alt={social.alt} width={18} height={18} />
+                      <Image src={`/images/${social.icon}`} alt={social.alt} width={18} height={18} className="w-[18px] h-[18px]" />
                     </Link>
                 ))}
               </div>
@@ -127,7 +127,7 @@ const Footer = () => {
         {/* Decorative Background Image */}
         <div className="relative w-screen">
           <Image
-              src="/images/footer_bg_logo2.png"
+              src="/images/footer_bg_logo.png"
               alt=""
               width={1064}
               height={64}

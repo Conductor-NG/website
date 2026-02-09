@@ -26,7 +26,7 @@ const NavBar = () => {
                 <li className="hover:scale-[1.1]">
                     <Link href="/">
                         <Image
-                            className="w-[28px] h-[28px] md:w-[30px] md:h-[30px]"
+                            className="w-[28px] h-[28px] md:w-[50px] md:h-[50px]"
                             src="/images/conductor.svg"
                             alt="Conductor logo"
                             width={48}
@@ -40,10 +40,10 @@ const NavBar = () => {
                     <Link href="/faq">FAQs</Link>
                 </li>
                 <li
-                    className="hover:underline decoration-gray-300 mr-[30px] flex gap-1 items-end cursor-pointer"
+                    className="hover:underline decoration-gray-300 mr-[30px] flex gap-1 items-center cursor-pointer"
                     onClick={() => setToggleContactUs(!toggleContactUs)}
                 >
-                    <span>Contact Us </span> <ChevronDown className="h-[16px]"/>
+                    <div>Contact Us </div> <ChevronDown className="h-[16px]"/>
                 </li>
                 <li>
                     {currentPage === "driver" ? (
@@ -148,7 +148,7 @@ const NavBar = () => {
           <span className="hover:scale-[1.1] ">
             <Link href="/">
               <Image
-                  className="w-[28px] h-[28px] md:w-[30px] md:h-[30px]"
+                  className="w-[28px] h-[28px] md:w-[50px] md:h-[50px]"
                   src="/images/conductor.svg"
                   alt="Conductor logo"
                   width={40}

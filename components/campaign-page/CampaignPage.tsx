@@ -12,7 +12,7 @@ import {
     CAMPAIGN_LOCATIONS,
     CAMPAIGN_REFERRAL_STORAGE_KEY,
     CAMPAIGN_STORE_URLS,
-    CampaignVariant,
+    CampaignVariant, DISTANCE_MATRIX,
     ISLAND_LOCATIONS,
 } from "@/lib/campaign";
 
@@ -25,8 +25,8 @@ type ModalState = "idle" | "calculator" | "signup";
 
 const FREQUENCIES = [
     {key: "daily", label: "Daily", multiplier: 1},
-    {key: "weekly", label: "Weekly", multiplier: 3},
-    {key: "monthly", label: "Monthly", multiplier: 12},
+    {key: "weekly", label: "Weekly", multiplier: 5},
+    {key: "monthly", label: "Monthly", multiplier: 20},
 ] as const;
 
 const ASSETS = {
@@ -275,9 +275,9 @@ function Navbar({
                     <Image
                         src={ASSETS.logo}
                         alt="Conductor"
-                        width={30}
-                        height={30}
-                        className="size-7"
+                        width={50}
+                        height={50}
+                        className="w-[28px] h-[28px] md:w-[50px] md:h-[50px]"
                         priority
                     />
                 </Link>
@@ -660,7 +660,7 @@ function CalculatorModal({
                     <p className="text-center text-sm text-[#676563]">
                         {copy.modalEstimateLabel}
                     </p>
-                    <p className="mt-1 text-center text-4xl font-semibold text-[#292928]">
+                    <p className="mt-1 text-center text-4xl font-black text-[#393938]">
                         {formatNaira(estimate)}
                     </p>
                     <p className="text-center text-sm lowercase text-[#878583]">
@@ -900,9 +900,23 @@ export default function CampaignPage({
     // Estimate calculation
     const baseEstimate = useMemo(() => {
         if (!startLocation || !endLocation) return 0;
-        const distance =
-            Math.abs(Number(startLocation) - Number(endLocation)) * 4 + 6;
-        return distance * (isDriver ? 2000 : 1200);
+
+        const costPerKm = 300; // 300 Naira/KM
+
+        const lookupKey = `${startLocation}_${endLocation}`;
+        const distance = DISTANCE_MATRIX[lookupKey];
+
+        if (distance === undefined) {
+            console.warn(`Distance not mapped for key: ${lookupKey}`);
+            return 0;
+        }
+
+        if (isDriver) {
+            const estimatePassengers = 3;
+            return distance * costPerKm * estimatePassengers;
+        }
+
+        return distance * costPerKm;
     }, [startLocation, endLocation, isDriver]);
 
     const estimate = useMemo(() => {
