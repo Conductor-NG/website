@@ -202,7 +202,7 @@ function PrimaryButton({
             onClick={onClick}
             disabled={disabled}
             className={cn(
-                "rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#d97f07] disabled:cursor-not-allowed disabled:opacity-60",
+                "rounded-xl bg-primary px-6 py-3 text-sm text-white transition-colors hover:bg-[#d97f07] disabled:cursor-not-allowed disabled:opacity-60",
                 className,
             )}
         >
@@ -635,7 +635,7 @@ function CalculatorModal({
                     <div className="absolute left-6 top-6 max-w-md pr-12 text-white">
                         <div className="flex flex-row">
                             <div className="flex flex-col">
-                                <h3 className="text-xl font-semibold sm:text-2xl">
+                                <h3 className="text-2xl font-semibold sm:text-2xl">
                                     {copy.modalTitle}
                                 </h3>
                                 <p className="mt-2 text-xs text-white/80 sm:text-sm">
