@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { ChevronDown, Play, X } from "lucide-react";
+import {useSearchParams} from "next/navigation";
+import {ChevronDown, Play, X} from "lucide-react";
 
-import { satoshi } from "@/app/fonts/satoshi";
-import { cn } from "@/app/utils";
+import {satoshi} from "@/app/fonts/satoshi";
+import {cn} from "@/app/utils";
 import {
     CAMPAIGN_LOCATIONS,
     CAMPAIGN_REFERRAL_STORAGE_KEY,
@@ -24,9 +24,9 @@ type ModalState = "idle" | "calculator" | "signup";
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const FREQUENCIES = [
-    { key: "daily", label: "Daily", multiplier: 1 },
-    { key: "weekly", label: "Weekly", multiplier: 3 },
-    { key: "monthly", label: "Monthly", multiplier: 12 },
+    {key: "daily", label: "Daily", multiplier: 1},
+    {key: "weekly", label: "Weekly", multiplier: 3},
+    {key: "monthly", label: "Monthly", multiplier: 12},
 ] as const;
 
 const ASSETS = {
@@ -36,6 +36,7 @@ const ASSETS = {
     },
     modalHeader: "/images/campaign-modal-header-bg.svg",
     signupPanel: "/images/passenger-signup-panel.svg",
+    signupPanelDriver: "/images/driver-signup-panel.svg",
     badges: {
         play: "/images/pg_playstore_download_button.svg",
         app: "/images/pg_appstore_download_button.svg",
@@ -105,7 +106,7 @@ const COPY = {
 
 function detectPlatform(): "ios" | "android" | "web" {
     if (typeof window === "undefined") return "web";
-    const ua = navigator.userAgent || (navigator as any).vendor;
+    const ua = navigator.userAgent || navigator.vendor;
     if (/android/i.test(ua)) return "android";
     if (/iPad|iPhone|iPod/i.test(ua) || /Mac/i.test(navigator.platform))
         return "ios";
@@ -150,7 +151,7 @@ function Modal({
     return (
         <div
             className="fixed inset-0 flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm"
-            style={{ zIndex: z }}
+            style={{zIndex: z}}
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
             {children}
@@ -238,17 +239,18 @@ function SelectField({
                     </option>
                 ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-[#676563]" />
+            <ChevronDown
+                className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-[#676563]"/>
         </div>
     );
 }
 
-function ProgressBar({ value }: { value: number }) {
+function ProgressBar({value}: { value: number }) {
     return (
         <div className="h-2 w-full overflow-hidden rounded-full bg-[#e6e5e3]">
             <div
                 className="h-full rounded-full bg-tertiary transition-all duration-500"
-                style={{ width: `${value}%` }}
+                style={{width: `${value}%`}}
             />
         </div>
     );
@@ -304,7 +306,7 @@ function Navbar({
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
-function HeroSection({ variant }: { variant: CampaignVariant }) {
+function HeroSection({variant}: { variant: CampaignVariant }) {
     const isDriver = variant === "driver";
     const copy = COPY.hero[variant];
 
@@ -342,7 +344,7 @@ function HeroSection({ variant }: { variant: CampaignVariant }) {
                     muted
                     loop
                     playsInline
-                    className="hidden w-full rounded-2xl md:block"
+                    className="hidden w-full rounded-3xl md:block"
                 />
                 <video
                     src="/videos/hero_mobile.mp4"
@@ -353,14 +355,16 @@ function HeroSection({ variant }: { variant: CampaignVariant }) {
                     className="w-full rounded-2xl md:hidden"
                 />
 
-                <div className="absolute bottom-4 rounded-br-[42px] rounded-tr-lg bg-[#f1ebe4] px-5 py-4 shadow-sm md:bottom-6 md:left-0 md:w-60">
+                <div
+                    className="absolute bottom-4 rounded-br-[42px] rounded-tr-lg bg-[#f1ebe4] px-5 py-4 shadow-sm md:bottom-6 md:left-0 md:w-60">
                     <p className="text-sm font-light text-[#302f2f]">
                         See How Conductor Works in Real Life
                     </p>
                     <div className="mt-2 flex items-center gap-3 text-xs text-[#302f2f]">
                         <span>Watch video</span>
-                        <span className="flex size-4 items-center justify-center rounded-full border border-primary text-primary">
-              <Play className="ml-px size-2 fill-primary stroke-primary" />
+                        <span
+                            className="flex size-4 items-center justify-center rounded-full border border-primary text-primary">
+              <Play className="ml-px size-2 fill-primary stroke-primary"/>
             </span>
                     </div>
                 </div>
@@ -445,14 +449,14 @@ function CalculatorSection({
 
 // ─── Store Footer ────────────────────────────────────────────────────────────
 
-function StoreFooter({ variant }: { variant: CampaignVariant }) {
+function StoreFooter({variant}: { variant: CampaignVariant }) {
     const urls = CAMPAIGN_STORE_URLS[variant];
 
     return (
         <section className="mt-20 bg-[#efeeec]">
             <Section className="flex flex-col items-center gap-10 py-12 md:flex-row md:items-start md:py-16">
-                <div className="order-3 md:order-1 max-w-lg text-center md:text-left">
-                    <h2 className="text-2xl font-medium text-[#292928] md:text-4xl">
+                <div className="max-w-lg text-center md:text-left">
+                    <h2 className="text-2xl text-[#292928] md:text-4xl">
                         Start Earning on Your Daily Commute
                     </h2>
                     <p className="mt-4 text-sm text-[#676563] md:text-base">
@@ -461,13 +465,13 @@ function StoreFooter({ variant }: { variant: CampaignVariant }) {
                 </div>
 
                 {/* Desktop: QR + badges */}
-                <div className="order-2 md:order-2 hidden items-center gap-10 md:flex">
+                <div className="hidden items-center gap-10 md:flex">
                     {[
-                        { qr: ASSETS.qr.play, badge: ASSETS.badges.play, alt: "Google Play", href: urls.android },
-                        { qr: ASSETS.qr.app, badge: ASSETS.badges.app, alt: "App Store", href: urls.ios },
+                        {qr: ASSETS.qr.play, badge: ASSETS.badges.play, alt: "Google Play", href: urls.android},
+                        {qr: ASSETS.qr.app, badge: ASSETS.badges.app, alt: "App Store", href: urls.ios},
                     ].map((store) => (
                         <div key={store.alt} className="flex flex-col items-center gap-4">
-                            <Image src={store.qr} alt="" width={164} height={164} />
+                            <Image src={store.qr} alt="" width={164} height={164}/>
                             <Link href={store.href || "#"}>
                                 <Image
                                     src={store.badge}
@@ -482,16 +486,118 @@ function StoreFooter({ variant }: { variant: CampaignVariant }) {
                 </div>
 
                 {/* Mobile: badges only */}
-                <div className="order-1 md:order-3 flex items-center gap-4 md:hidden">
+                <div className="flex items-center gap-4 md:hidden">
                     <Link href={urls.android || "#"}>
-                        <Image src={ASSETS.badges.play} alt="Google Play" width={120} height={40} />
+                        <Image src={ASSETS.badges.play} alt="Google Play" width={120} height={40}/>
                     </Link>
                     <Link href={urls.ios || "#"}>
-                        <Image src={ASSETS.badges.app} alt="App Store" width={120} height={40} />
+                        <Image src={ASSETS.badges.app} alt="App Store" width={120} height={40}/>
                     </Link>
                 </div>
             </Section>
         </section>
+    );
+}
+
+// ─── Frequency Slider ────────────────────────────────────────────────────────
+
+function FrequencySlider({
+                             frequency,
+                             onChange,
+                         }: {
+    frequency: FrequencyKey;
+    onChange: (f: FrequencyKey) => void;
+}) {
+    const idx = FREQUENCIES.findIndex((f) => f.key === frequency);
+    const pct = (idx / (FREQUENCIES.length - 1)) * 100;
+
+    return (
+        <div className="mt-6">
+            <div className="relative flex h-10 items-center px-1">
+                {/* Track background */}
+                <div className="absolute inset-x-1 h-[3px] rounded-full bg-[#e6e5e3]"/>
+                {/* Filled track */}
+                <div
+                    className="absolute left-1 h-[3px] rounded-full bg-[#db405a]"
+                    style={{width: `calc(${pct}% - 4px)`}}
+                />
+
+                {/* Endpoint dots */}
+                {FREQUENCIES.map((f, i) => {
+                    const pos = (i / (FREQUENCIES.length - 1)) * 100;
+                    const isActive = i <= idx;
+                    return (
+                        <button
+                            key={f.key}
+                            type="button"
+                            onClick={() => onChange(f.key)}
+                            className={cn(
+                                "absolute size-3 rounded-full border-2 bg-white transition-colors",
+                                isActive ? "border-[#db405a]" : "border-[#d1d0ce]",
+                            )}
+                            style={{left: `calc(${pos}% - 6px + 4px)`}}
+                            aria-label={f.label}
+                        />
+                    );
+                })}
+
+                {/* Thumb */}
+                <div
+                    className="pointer-events-none absolute flex size-8 items-center justify-center rounded-full bg-[#1a1a1a] shadow-md transition-all duration-200"
+                    style={{left: `calc(${pct}% - 16px + 4px)`}}
+                >
+                    <svg
+                        width="14"
+                        height="10"
+                        viewBox="0 0 14 10"
+                        fill="none"
+                        className="text-white"
+                    >
+                        <path
+                            d="M5 1L1.5 5L5 9"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M9 1L12.5 5L9 9"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </div>
+
+                {/* Invisible range input for drag interaction */}
+                <input
+                    type="range"
+                    min={0}
+                    max={FREQUENCIES.length - 1}
+                    step={1}
+                    value={idx}
+                    onChange={(e) => onChange(FREQUENCIES[+e.target.value].key)}
+                    className="absolute inset-0 w-full cursor-pointer opacity-0"
+                    aria-label="Frequency"
+                />
+            </div>
+
+            <div className="mt-3 flex justify-between text-xs">
+                {FREQUENCIES.map((f) => (
+                    <span
+                        key={f.key}
+                        className={
+                            f.key === frequency
+                                ? "font-semibold text-[#292928]"
+                                : "text-[#676563]"
+                        }
+                    >
+            {f.label}
+          </span>
+                ))}
+            </div>
+        </div>
     );
 }
 
@@ -513,37 +619,41 @@ function CalculatorModal({
     onContinue: () => void;
 }) {
     const copy = COPY.calculator[variant];
-    const idx = FREQUENCIES.findIndex((f) => f.key === frequency);
-    const pct = (idx / (FREQUENCIES.length - 1)) * 100;
 
     return (
         <Modal onClose={onClose}>
             <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-black shadow-2xl sm:max-w-xl">
                 {/* Header */}
-                <div className="relative h-28 w-full sm:h-52">
+                <div className="relative h-28 w-full sm:h-40 aspect-ratio">
                     <Image
                         src={ASSETS.modalHeader}
                         alt=""
                         fill
-                        className="hidden rounded-t-3xl object-cover sm:block"
+                        className="hidden rounded-t-3xl object-cover sm:block aspect-ratio"
                         priority
                     />
                     <div className="absolute left-6 top-6 max-w-md pr-12 text-white">
-                        <h3 className="text-xl font-semibold sm:text-2xl">
-                            {copy.modalTitle}
-                        </h3>
-                        <p className="mt-2 text-xs text-white/80 sm:text-sm">
-                            {copy.modalDescription}
-                        </p>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col">
+                                <h3 className="text-xl font-semibold sm:text-2xl">
+                                    {copy.modalTitle}
+                                </h3>
+                                <p className="mt-2 text-xs text-white/80 sm:text-sm">
+                                    {copy.modalDescription}
+                                </p>
+                            </div>
+                            <div className="hidden w-20 sm:block"></div>
+                        </div>
                     </div>
                     <IconButton
                         onClick={onClose}
                         label="Close"
                         className="absolute right-4 top-6 bg-white/10 text-white backdrop-blur hover:bg-white/20"
                     >
-                        <X className="size-4" />
+                        <X className="size-4"/>
                     </IconButton>
                 </div>
+
 
                 {/* Body */}
                 <div className="rounded-b-3xl rounded-t-3xl bg-white px-6 pb-8 pt-6 sm:rounded-t-none">
@@ -557,36 +667,10 @@ function CalculatorModal({
                         {frequency}
                     </p>
 
-                    <div className="mt-6">
-                        <input
-                            type="range"
-                            min={0}
-                            max={FREQUENCIES.length - 1}
-                            step={1}
-                            value={idx}
-                            onChange={(e) =>
-                                onFrequencyChange(FREQUENCIES[+e.target.value].key)
-                            }
-                            className="campaign-slider w-full cursor-pointer"
-                            style={{
-                                background: `linear-gradient(to right, #db405a ${pct}%, #e6e5e3 ${pct}%)`,
-                            }}
-                        />
-                        <div className="mt-2 flex justify-between text-xs">
-                            {FREQUENCIES.map((f) => (
-                                <span
-                                    key={f.key}
-                                    className={
-                                        f.key === frequency
-                                            ? "font-semibold text-[#292928]"
-                                            : "text-[#676563]"
-                                    }
-                                >
-                  {f.label}
-                </span>
-                            ))}
-                        </div>
-                    </div>
+                    <FrequencySlider
+                        frequency={frequency}
+                        onChange={onFrequencyChange}
+                    />
 
                     <div className="mt-6 text-center">
                         <PrimaryButton onClick={onContinue}>
@@ -626,11 +710,79 @@ function SignupModal({
     const inputClass =
         "w-full rounded-xl bg-[#efeeec] px-4 py-3 text-sm text-[#292928] outline-none placeholder:text-[#a09e9c]";
 
+
     if (variant === "passenger") {
         return (
             <Modal onClose={onClose} z={320}>
-                <div className="grid place-items-center text-4xl text-emerald-100">
-                    Passenger Signup
+                <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-xl">
+                    <div className="flex flex-col md:flex-row">
+                        {/* Form */}
+                        <div className="flex-1 p-6 md:px-8">
+                            <div className="hidden sm:block">
+                                <p className="text-[#292928] text-3xl">
+                                    {copy.title}
+                                </p>
+                                <p className="text-[#292928] text-3xl">
+                                    {copy.subtitle}
+                                </p>
+                            </div>
+
+                            <div className="block sm:hidden text-2xl">
+                                {copy.title} {copy.subtitle}
+                            </div>
+
+                            <div className="mt-6 space-y-4">
+                                <fieldset>
+                                    <label className="text-xs text-[#676563]">Phone number</label>
+                                    <div className="mt-2 flex gap-2">
+                                        <div className="relative">
+                                            <select
+                                                value={countryCode}
+                                                onChange={(e) => onCountryChange(e.target.value)}
+                                                className="w-20 appearance-none rounded-xl bg-[#efeeec] px-3 py-3 text-xs text-[#292928] outline-none"
+                                            >
+                                                <option value="+234">+234</option>
+                                                <option value="+1">+1</option>
+                                                <option value="+44">+44</option>
+                                            </select>
+                                            <ChevronDown
+                                                className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 opacity-50"/>
+                                        </div>
+                                        <input
+                                            value={phoneNumber}
+                                            onChange={(e) => onPhoneChange(e.target.value)}
+                                            placeholder="Number"
+                                            className={cn(inputClass, "flex-1")}
+                                        />
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <label className="text-xs text-[#676563]">Referral Code</label>
+                                    <input
+                                        value={referralCode}
+                                        onChange={(e) => onReferralChange(e.target.value)}
+                                        placeholder="Enter Referral code (Optional)"
+                                        className={cn(inputClass, "mt-2")}
+                                    />
+                                </fieldset>
+
+                                <PrimaryButton onClick={onSubmit} className="w-full">
+                                    {copy.cta}
+                                </PrimaryButton>
+                            </div>
+                        </div>
+
+                        {/* Side image */}
+                        <div className="relative hidden w-full md:block md:w-3/6">
+                            <Image
+                                src={ASSETS.signupPanel}
+                                alt=""
+                                fill
+                                className="rounded-bl-[3rem] object-center object-cover"
+                            />
+                        </div>
+                    </div>
                 </div>
             </Modal>
         );
@@ -640,24 +792,27 @@ function SignupModal({
         <Modal onClose={onClose} z={320}>
             <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-xl">
                 <div className="flex flex-col md:flex-row">
+                    {/* Side image */}
+                    <div className="relative hidden w-full md:block md:w-3/6">
+                        <Image
+                            src={ASSETS.signupPanelDriver}
+                            alt=""
+                            fill
+                            className="rounded-br-[3rem] object-right object-cover"
+                        />
+                    </div>
+
                     {/* Form */}
                     <div className="flex-1 p-6 md:px-8">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-lg font-semibold text-[#292928] md:text-xl">
+                                <p className="text-lg font-semibold text-[#292928] md:text-lg">
                                     {copy.title}
                                 </p>
-                                <p className="text-lg font-semibold text-[#292928] md:text-xl">
+                                <p className="text-lg font-semibold text-[#292928] md:text-lg">
                                     {copy.subtitle}
                                 </p>
                             </div>
-                            <IconButton
-                                onClick={onClose}
-                                label="Close"
-                                className="bg-[#efeeec] text-[#676563] hover:bg-[#e6e5e3]"
-                            >
-                                <X className="size-4" />
-                            </IconButton>
                         </div>
 
                         <div className="mt-6 space-y-4">
@@ -674,7 +829,8 @@ function SignupModal({
                                             <option value="+1">+1</option>
                                             <option value="+44">+44</option>
                                         </select>
-                                        <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 opacity-50" />
+                                        <ChevronDown
+                                            className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 opacity-50"/>
                                     </div>
                                     <input
                                         value={phoneNumber}
@@ -699,16 +855,6 @@ function SignupModal({
                                 {copy.cta}
                             </PrimaryButton>
                         </div>
-                    </div>
-
-                    {/* Side image */}
-                    <div className="relative hidden w-full md:block md:w-3/5">
-                        <Image
-                            src={ASSETS.signupPanel}
-                            alt=""
-                            fill
-                            className="rounded-bl-[3rem] object-cover"
-                        />
                     </div>
                 </div>
             </div>
@@ -777,9 +923,9 @@ export default function CampaignPage({
 
     return (
         <div className={cn("min-h-screen bg-white", satoshi.className)}>
-            <Navbar variant={variant} onAction={() => setModal("signup")} />
+            <Navbar variant={variant} onAction={() => setModal("signup")}/>
 
-            <HeroSection variant={variant} />
+            <HeroSection variant={variant}/>
 
             <CalculatorSection
                 variant={variant}
@@ -791,7 +937,7 @@ export default function CampaignPage({
                 canEstimate={canEstimate}
             />
 
-            <StoreFooter variant={variant} />
+            <StoreFooter variant={variant}/>
 
             {modal === "calculator" && (
                 <CalculatorModal
