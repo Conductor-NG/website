@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ReduxProvider from "./provider";
 import { Archivo } from "next/font/google";
-import NavBar from "@/components/navbar/navbar.component";
+import { AppContentWrapper, AppNavBar } from "./layout-wrappers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,9 +25,9 @@ export default function RootLayout({
       <body>
         <ReduxProvider>
           <div className="fixed top-0 right-0 left-0 bg-white z-50">
-            <NavBar />
+            <AppNavBar />
           </div>
-          <div className="mt-[150px]">{children}</div>
+          <AppContentWrapper>{children}</AppContentWrapper>
         </ReduxProvider>
       </body>
     </html>
