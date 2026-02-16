@@ -83,7 +83,7 @@ const COPY = {
             title: "Route Cost Calculator",
             subtitle: "Enter your Route and see how much it cost",
             description: "Estimate what you spend on your daily route",
-            button: "Estimated Earning",
+            button: "Estimated Cost",
             modalTitle: "Ride safe, Spend less",
             modalDescription:
                 "We've calculated your route. Turn your journey into a comfy ride",
