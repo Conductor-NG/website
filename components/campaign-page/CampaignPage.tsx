@@ -4,22 +4,25 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
-import {ChevronDown, Play, X} from "lucide-react";
+import {ArrowRight, ChevronDown, Play, X} from "lucide-react";
 
 import {satoshi} from "@/app/fonts/satoshi";
 import {cn} from "@/app/utils";
 import {
+    CampaignVariant,
     CAMPAIGN_LOCATIONS,
     CAMPAIGN_REFERRAL_STORAGE_KEY,
     CAMPAIGN_STORE_URLS,
-    CampaignVariant, DISTANCE_MATRIX,
+    DISTANCE_MATRIX_GEMINI as DISTANCE_MATRIX,
     ISLAND_LOCATIONS,
 } from "@/lib/campaign";
+import {Roboto} from "next/font/google";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type FrequencyKey = "daily" | "weekly" | "monthly";
 type ModalState = "idle" | "calculator" | "signup";
+type TripType = "one-way" | "round-trip";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -55,7 +58,7 @@ const COPY = {
             highlight: "1,000",
             suffix: "Drivers",
             subtitle: "Join us in growing and earning easily",
-            progress: 3,
+            progress: 25,
         },
         passenger: {
             title: "We Are Currently",
@@ -101,6 +104,38 @@ const COPY = {
         },
     },
 } as const;
+
+const roboto = Roboto({
+    subsets: ["latin"],
+    weight: ["400", "500", "700"],
+});
+
+type InfoProps = { head: string; links: { title: string; href: string }[] };
+
+const info: InfoProps[] = [
+    {
+        head: "Company",
+        links: [
+            {title: "About Us", href: "/about"},
+            {title: "Our Vision", href: "/vision"},
+        ],
+    },
+    {
+        head: "Support",
+        links: [
+            {title: "FAQs", href: "/faq"},
+            {title: "Email Us!", href: "mailto:support@conductor.ng"},
+        ],
+    },
+];
+
+const socialLinks = [
+    {href: "https://www.facebook.com/...", icon: "facebook.svg", alt: "facebook"},
+    {href: "https://x.com/...", icon: "twitter-x-fill.svg", alt: "x"},
+    {href: "https://www.instagram.com/...", icon: "instagram-fill.svg", alt: "instagram"},
+    {href: "https://www.linkedin.com/...", icon: "linkedin-fill.svg", alt: "linkedin"},
+    {href: "#", icon: "tiktok-fill.svg", alt: "tiktok"},
+];
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
 
@@ -261,11 +296,15 @@ function ProgressBar({value}: { value: number }) {
 function Navbar({
                     variant,
                     onAction,
+                    ref
                 }: {
     variant: CampaignVariant;
+    ref: string,
     onAction: () => void;
 }) {
     const isDriver = variant === "driver";
+    const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
+    const href = `/campaign/${otherVariant}${ref.length === 0 ? '' : `?ref=${ref}`}`;
     const label = isDriver ? "Download App" : "Register";
 
     return (
@@ -285,7 +324,7 @@ function Navbar({
                 <div className="flex items-center gap-2">
                     {isDriver && (
                         <Link
-                            href="/campaign/passenger"
+                            href={href}
                             className="hidden rounded-full border border-[#e6e5e3] px-4 py-2 text-sm font-semibold text-primary hover:border-[#d7d5d2] md:inline-flex"
                         >
                             For Passenger
@@ -301,6 +340,119 @@ function Navbar({
                 </div>
             </Section>
         </nav>
+    );
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────────────
+
+function Footer({variant, ref}: { variant: CampaignVariant, ref: string }) {
+    const currentYear = new Date().getFullYear();
+    const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
+    const href = `/campaign/${otherVariant}${ref.length === 0 ? '' : `?ref=${ref}`}`;
+
+
+    return (
+        <footer className="w-full text-white bg-[#0A0704]">
+            <div className="max-w-[1120px] mx-auto md:w-[78%] px-6 md:px-0 pt-16 pb-10">
+                <div className="flex flex-col md:flex-row justify-between pb-16 gap-y-12">
+
+                    {/* Waitlist Section */}
+                    <div className="flex flex-col items-start max-w-sm">
+                        <a href={href}
+                           className={cn(roboto.className, "text-tertiary bg-[#211e1c] text-sm py-2 px-4 rounded-full mb-8")}>
+                            {variant === "driver" ? 'Support as a Passenger' : 'Onboard as a car owner'}
+                        </a>
+                        <h2 className="text-xl md:text-3xl font-medium mb-8 leading-tight">
+                            Be among the first! <br/> Be Part of the Journey
+                        </h2>
+                        <div className="flex w-full h-[52px]">
+                            <input
+                                type="email"
+                                placeholder="Enter your email here"
+                                className="flex-1 bg-[#211e1c] placeholder:text-[#63605e] px-4 border border-white/10 outline-none focus:border-tertiary/50 transition-colors"
+                            />
+                            <button
+                                className="w-14 flex justify-center items-center bg-[#f8d9de] text-black hover:bg-[#f2c5cc] transition-colors">
+                                <ArrowRight size={20}/>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Links Grid */}
+                    <div className="flex gap-x-14 md:gap-x-20">
+                        {info.map((item, index) => (
+                            <div key={index}>
+                                <h3 className="text-base font-medium mb-8 uppercase tracking-wider text-white/90">
+                                    {item.head}
+                                </h3>
+                                <ul className="flex flex-col gap-y-6 text-[#ACA9A6] text-sm">
+                                    {item.links.map((link, idx) => (
+                                        <li key={idx}>
+                                            <Link href={link.href} className="hover:text-white transition-colors">
+                                                {link.title}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                    {/* Mobile-only links inside the first list to save space */}
+                                    {index === 0 && (
+                                        <>
+                                            <li className="md:hidden"><Link href="/terms-and-conditions">Terms of
+                                                Service</Link></li>
+                                            <li className="md:hidden"><Link href="/privacy-policy">Privacy Policy</Link>
+                                            </li>
+                                        </>
+                                    )}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Bottom Bar */}
+                <div
+                    className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-y-8">
+                    <div className="flex items-center gap-x-8 w-full md:w-auto justify-between md:justify-start">
+                        <Link href="/">
+                            <Image src="/images/conductor.svg" alt="logo" width={50} height={52}
+                                   className="w-[28px] h-[28px] md:w-[50px] md:h-[50px]"/>
+                        </Link>
+                        <div className="flex gap-x-5">
+                            {socialLinks.map((social, i) => (
+                                <Link key={i} href={social.href}
+                                      className="opacity-70 hover:opacity-100 transition-opacity">
+                                    <Image src={`/images/${social.icon}`} alt={social.alt} width={18} height={18}
+                                           className="w-[18px] h-[18px]"/>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="hidden md:flex gap-x-10 text-[#ACA9A6] text-sm font-light">
+                        <Link href="/terms-and-conditions" className="underline decoration-white/20 hover:text-white">
+                            Terms of service
+                        </Link>
+                        <Link href="/privacy-policy" className="underline decoration-white/20 hover:text-white">
+                            Privacy policy
+                        </Link>
+                        <span>© {currentYear} Conductor.ng</span>
+                    </div>
+
+                    <span className="md:hidden text-xs text-[#ACA9A6]">© {currentYear} Conductor.ng</span>
+                </div>
+            </div>
+
+            {/* Decorative Background Image */}
+            <div className="relative w-screen">
+                <Image
+                    src="/images/footer_bg_logo.png"
+                    alt=""
+                    width={1064}
+                    height={64}
+                    className="object-cover object-top pointer-events-none w-screen h-40 brightness-150"
+                    priority
+                />
+            </div>
+        </footer>
     );
 }
 
@@ -607,6 +759,8 @@ function CalculatorModal({
                              variant,
                              estimate,
                              frequency,
+                             tripType,
+                             onTripTypeChange,
                              onFrequencyChange,
                              onClose,
                              onContinue,
@@ -614,6 +768,8 @@ function CalculatorModal({
     variant: CampaignVariant;
     estimate: number;
     frequency: FrequencyKey;
+    tripType: TripType;
+    onTripTypeChange: (t: TripType) => void,
     onFrequencyChange: (f: FrequencyKey) => void;
     onClose: () => void;
     onContinue: () => void;
@@ -654,9 +810,35 @@ function CalculatorModal({
                     </IconButton>
                 </div>
 
-
                 {/* Body */}
                 <div className="rounded-b-3xl rounded-t-3xl bg-white px-6 pb-8 pt-6 sm:rounded-t-none">
+
+                    {/* --- Trip Type Toggle --- */}
+                    <div className="mb-6 flex justify-center">
+                        <div className="flex rounded-full bg-[#F5F5F4] p-1 gap-3">
+                            <button
+                                onClick={() => onTripTypeChange('one-way')}
+                                className={`rounded-full px-6 py-2 text-sm transition-all ${
+                                    tripType === 'one-way'
+                                        ? "bg-[#EE9113] text-white shadow-sm"
+                                        : "text-[#676563] hover:text-[#393938]"
+                                }`}
+                            >
+                                One way
+                            </button>
+                            <button
+                                onClick={() => onTripTypeChange('round-trip')}
+                                className={`rounded-full px-6 py-2 text-sm transition-all ${
+                                    tripType === 'round-trip'
+                                        ? "bg-[#EE9113] text-white shadow-sm"
+                                        : "text-[#676563] hover:text-[#393938]"
+                                }`}
+                            >
+                                Round Trip
+                            </button>
+                        </div>
+                    </div>
+
                     <p className="text-center text-sm text-[#676563]">
                         {copy.modalEstimateLabel}
                     </p>
@@ -878,6 +1060,7 @@ export default function CampaignPage({
     const [startLocation, setStartLocation] = useState("");
     const [endLocation, setEndLocation] = useState("");
     const [frequency, setFrequency] = useState<FrequencyKey>("weekly");
+    const [tripType, setTripType] = useState<TripType>("one-way");
     const [modal, setModal] = useState<ModalState>("idle");
 
     // Referral persistence
@@ -901,8 +1084,6 @@ export default function CampaignPage({
     const baseEstimate = useMemo(() => {
         if (!startLocation || !endLocation) return 0;
 
-        const costPerKm = 300; // 300 Naira/KM
-
         const lookupKey = `${startLocation}_${endLocation}`;
         const distance = DISTANCE_MATRIX[lookupKey];
 
@@ -911,19 +1092,25 @@ export default function CampaignPage({
             return 0;
         }
 
+        const estimate = ((280 * distance) / 4) + (35 * distance)
+
         if (isDriver) {
-            const estimatePassengers = 3;
-            return distance * costPerKm * estimatePassengers;
+            const estimatePassengers = 4;
+            return estimate * estimatePassengers;
         }
 
-        return distance * costPerKm;
+        return estimate;
     }, [startLocation, endLocation, isDriver]);
 
     const estimate = useMemo(() => {
+
+        const tripTypeMultiplier = tripType === "round-trip" ? 2 : 1;
+
         const mult =
             FREQUENCIES.find((f) => f.key === frequency)?.multiplier ?? 1;
-        return baseEstimate * mult;
-    }, [baseEstimate, frequency]);
+
+        return baseEstimate * mult * tripTypeMultiplier;
+    }, [baseEstimate, frequency, tripType]);
 
     const canEstimate = Boolean(startLocation && endLocation);
 
@@ -936,47 +1123,53 @@ export default function CampaignPage({
     const closeModal = useCallback(() => setModal("idle"), []);
 
     return (
-        <div className={cn("min-h-screen bg-white", satoshi.className)}>
-            <Navbar variant={variant} onAction={() => setModal("signup")}/>
+        <>
+            <div className={cn("min-h-screen bg-white", satoshi.className)}>
+                <Navbar variant={variant} ref={referralCode} onAction={() => setModal("signup")}/>
 
-            <HeroSection variant={variant}/>
+                <HeroSection variant={variant}/>
 
-            <CalculatorSection
-                variant={variant}
-                startLocation={startLocation}
-                endLocation={endLocation}
-                onStartChange={setStartLocation}
-                onEndChange={setEndLocation}
-                onCalculate={() => setModal("calculator")}
-                canEstimate={canEstimate}
-            />
-
-            <StoreFooter variant={variant}/>
-
-            {modal === "calculator" && (
-                <CalculatorModal
+                <CalculatorSection
                     variant={variant}
-                    estimate={estimate}
-                    frequency={frequency}
-                    onFrequencyChange={setFrequency}
-                    onClose={closeModal}
-                    onContinue={() => setModal("signup")}
+                    startLocation={startLocation}
+                    endLocation={endLocation}
+                    onStartChange={setStartLocation}
+                    onEndChange={setEndLocation}
+                    onCalculate={() => setModal("calculator")}
+                    canEstimate={canEstimate}
                 />
-            )}
 
-            {modal === "signup" && (
-                <SignupModal
-                    variant={variant}
-                    referralCode={referralCode}
-                    phoneNumber={phoneNumber}
-                    countryCode={countryCode}
-                    onReferralChange={setReferralCode}
-                    onPhoneChange={setPhoneNumber}
-                    onCountryChange={setCountryCode}
-                    onSubmit={handleRegister}
-                    onClose={closeModal}
-                />
-            )}
-        </div>
+                <StoreFooter variant={variant}/>
+
+                {modal === "calculator" && (
+                    <CalculatorModal
+                        variant={variant}
+                        estimate={estimate}
+                        frequency={frequency}
+                        onFrequencyChange={setFrequency}
+                        tripType={tripType}
+                        onTripTypeChange={setTripType}
+                        onClose={closeModal}
+                        onContinue={() => setModal("signup")}
+                    />
+                )}
+
+                {modal === "signup" && (
+                    <SignupModal
+                        variant={variant}
+                        referralCode={referralCode}
+                        phoneNumber={phoneNumber}
+                        countryCode={countryCode}
+                        onReferralChange={setReferralCode}
+                        onPhoneChange={setPhoneNumber}
+                        onCountryChange={setCountryCode}
+                        onSubmit={handleRegister}
+                        onClose={closeModal}
+                    />
+                )}
+
+                <Footer variant={variant} ref={referralCode}/>
+            </div>
+        </>
     );
 }
