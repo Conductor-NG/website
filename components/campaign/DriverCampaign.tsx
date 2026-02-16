@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
-import { Roboto } from "next/font/google";
-import { ChevronRight } from "lucide-react";
-import { cn } from "@/app/utils";
+import {Roboto} from "next/font/google";
+import {ChevronRight} from "lucide-react";
+import {cn} from "@/app/utils";
 
 const roboto = Roboto({
     subsets: ["latin"],
@@ -14,13 +14,9 @@ const DriverCampaign = () => {
         <section className="flex flex-col items-center w-full px-6 md:px-0">
             {/* Badge */}
             <span
-                className={cn(
-                    roboto.className,
-                    "bg-secondary text-white text-base font-normal py-2 px-4 rounded-full mb-8"
-                )}
-            >
-        Campaign
-      </span>
+                className={cn(roboto.className, "bg-secondary text-white text-base font-normal py-2 px-4 rounded-full mb-8")}>
+                Campaign
+            </span>
 
             {/* Header & Description */}
             <div className="text-center max-w-2xl">
@@ -28,16 +24,19 @@ const DriverCampaign = () => {
                     Turn Your Daily Commute Into Earnings
                 </h2>
                 <p className="text-secondary font-light md:text-lg leading-relaxed">
-                    Enter your route, see potential earnings, and learn how drivers make money without changing their daily schedule.
+                    Enter your route, see potential earnings, and learn how drivers make money without changing their
+                    daily schedule.
                 </p>
             </div>
 
             {/* Action Button */}
             <div className="mt-6">
-                <button className="group flex items-center gap-1 text-tertiary font-medium text-sm md:text-base transition-all hover:opacity-80">
+                <a
+                    href='/campaign/driver'
+                    className="group flex items-center gap-1 text-tertiary font-medium text-sm md:text-base transition-all hover:opacity-80">
                     <span>Join the Campaign</span>
-                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </button>
+                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1"/>
+                </a>
             </div>
 
             {/* Hero Image Container */}
