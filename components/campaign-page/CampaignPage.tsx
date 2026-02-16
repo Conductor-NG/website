@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
-import {ArrowRight, ChevronDown, Play, X} from "lucide-react";
+import {ArrowRight, ChevronDown, Play, X, Loader} from "lucide-react";
 
 import {satoshi} from "@/app/fonts/satoshi";
 import {cn} from "@/app/utils";
@@ -157,6 +157,10 @@ function formatNaira(value: number) {
         notation: "compact",
     }).format(value);
 }
+
+const delay = (ms: number): Promise<void> => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
@@ -322,18 +326,17 @@ function Navbar({
                 </Link>
 
                 <div className="flex items-center gap-2">
-                    {isDriver && (
-                        <Link
-                            href={href}
-                            className="hidden rounded-full border border-[#e6e5e3] px-4 py-2 text-sm font-semibold text-primary hover:border-[#d7d5d2] md:inline-flex"
-                        >
-                            For Passenger
-                        </Link>
-                    )}
+
+                    <Link
+                        href={href}
+                        className="hidden rounded-full border border-[#e6e5e3] px-4 py-2 text-sm font-semibold text-tertiary hover:border-[#d7d5d2] md:inline-flex">
+                        {variant === 'driver' ? "I'm a Passenger" : "I'm a Car Owner"}
+                    </Link>
+
                     <button
                         type="button"
                         onClick={onAction}
-                        className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-[#2e1c03] hover:bg-[#d97f07]"
+                        className="rounded-md bg-primary px-5 py-2 text-sm font-semibold text-white hover:bg-[#d97f07]"
                     >
                         {label}
                     </button>
@@ -601,7 +604,7 @@ function CalculatorSection({
 
 // ─── Store Footer ────────────────────────────────────────────────────────────
 
-function StoreFooter({variant}: { variant: CampaignVariant }) {
+function StoreFooter({variant, showSignup}: { variant: CampaignVariant, showSignup: () => void }) {
     const urls = CAMPAIGN_STORE_URLS[variant];
 
     return (
@@ -624,7 +627,7 @@ function StoreFooter({variant}: { variant: CampaignVariant }) {
                     ].map((store) => (
                         <div key={store.alt} className="flex flex-col items-center gap-4">
                             <Image src={store.qr} alt="" width={164} height={164}/>
-                            <Link href={store.href || "#"}>
+                            <div onClick={showSignup}>
                                 <Image
                                     src={store.badge}
                                     alt={store.alt}
@@ -632,7 +635,7 @@ function StoreFooter({variant}: { variant: CampaignVariant }) {
                                     height={40}
                                     className="transition-opacity hover:opacity-80"
                                 />
-                            </Link>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -815,7 +818,7 @@ function CalculatorModal({
 
                     {/* --- Trip Type Toggle --- */}
                     <div className="mb-6 flex justify-center">
-                        <div className="flex rounded-full bg-[#F5F5F4] p-1 gap-3">
+                        <div className="flex rounded-full bg-[#F2F2F1] p-1.5 gap-3">
                             <button
                                 onClick={() => onTripTypeChange('one-way')}
                                 className={`rounded-full px-6 py-2 text-sm transition-all ${
@@ -876,6 +879,7 @@ function SignupModal({
                          onPhoneChange,
                          onCountryChange,
                          onSubmit,
+                         isLoading,
                          onClose,
                      }: {
     variant: CampaignVariant;
@@ -885,6 +889,7 @@ function SignupModal({
     onReferralChange: (v: string) => void;
     onPhoneChange: (v: string) => void;
     onCountryChange: (v: string) => void;
+    isLoading: boolean;
     onSubmit: () => void;
     onClose: () => void;
 }) {
@@ -1033,8 +1038,10 @@ function SignupModal({
                                 />
                             </fieldset>
 
-                            <PrimaryButton onClick={onSubmit} className="w-full">
-                                {copy.cta}
+                            <PrimaryButton disabled={isLoading} onClick={onSubmit}
+                                           className="w-full flex place-items-center">
+                                {isLoading && <Loader className='h-4 w-4 mx-auto animate-spin'/>}
+                                {!isLoading && copy.cta}
                             </PrimaryButton>
                         </div>
                     </div>
@@ -1062,6 +1069,7 @@ export default function CampaignPage({
     const [frequency, setFrequency] = useState<FrequencyKey>("weekly");
     const [tripType, setTripType] = useState<TripType>("one-way");
     const [modal, setModal] = useState<ModalState>("idle");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // Referral persistence
     useEffect(() => {
@@ -1114,7 +1122,19 @@ export default function CampaignPage({
 
     const canEstimate = Boolean(startLocation && endLocation);
 
-    const handleRegister = useCallback(() => {
+    const handleRegister = useCallback(async () => {
+
+        setIsLoading(true);
+        // MAKE REQUEST TO SERVER, SAVE USER
+        await delay(2000);
+
+
+        setIsLoading(false);
+
+        // IF PASSENGER, SHOW TOAST
+
+
+        // IF DRIVER, NAVIGATE TO APP/PLAY STORE
         const platform = detectPlatform();
         const urls = CAMPAIGN_STORE_URLS[variant];
         window.location.href = platform === "ios" ? urls.ios : urls.android;
@@ -1139,7 +1159,7 @@ export default function CampaignPage({
                     canEstimate={canEstimate}
                 />
 
-                <StoreFooter variant={variant}/>
+                <StoreFooter variant={variant} showSignup={() => setModal("signup")}/>
 
                 {modal === "calculator" && (
                     <CalculatorModal
@@ -1164,6 +1184,7 @@ export default function CampaignPage({
                         onPhoneChange={setPhoneNumber}
                         onCountryChange={setCountryCode}
                         onSubmit={handleRegister}
+                        isLoading={isLoading}
                         onClose={closeModal}
                     />
                 )}

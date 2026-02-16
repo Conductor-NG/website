@@ -7,13 +7,13 @@ export const CAMPAIGN_STORE_URLS: Record<
     { ios: string; android: string }
 > = {
     driver: {
-        ios: "https://apps.apple.com/app/id0000000000",
-        android: "from_https://play.google.com/store/apps/details?id=com.conductor.driver",
+        ios: "https://apps.apple.com/ng/app/conductor-ng-driver/id6747726138",
+        android: "https://play.google.com/store/apps/details?id=ng.conductor.driver",
     },
     passenger: {
-        ios: "https://apps.apple.com/app/id0000000001",
+        ios: "https://apps.apple.com/ng/app/conductor-ng/id6747010463",
         android:
-            "https://play.google.com/store/apps/details?id=com.conductor.passenger",
+            "https://play.google.com/store/apps/details?id=ng.conductor.passenger",
     },
 };
 
