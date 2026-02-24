@@ -77,7 +77,7 @@ const Home: React.FC = () => {
 
             {/* Campaign Section - Full width variation if needed, otherwise use wrapper */}
             <SectionWrapper className="mt-24 md:mt-48">
-                <UserCampaign type={'passenger'}/>
+                <UserCampaign/>
             </SectionWrapper>
 
             {/* Safety Section */}

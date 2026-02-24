@@ -29,11 +29,11 @@ const info: InfoProps[] = [
 ];
 
 const socialLinks = [
-  { href: "https://www.facebook.com/...", icon: "facebook.svg", alt: "facebook" },
-  { href: "https://x.com/...", icon: "twitter-x-fill.svg", alt: "x" },
-  { href: "https://www.instagram.com/...", icon: "instagram-fill.svg", alt: "instagram" },
-  { href: "https://www.linkedin.com/...", icon: "linkedin-fill.svg", alt: "linkedin" },
-  { href: "#", icon: "tiktok-fill.svg", alt: "tiktok" },
+  { href: "https://www.facebook.com/61574617154383/", icon: "facebook.svg", alt: "facebook" },
+  { href: "https://x.com/conducterng", icon: "twitter-x-fill.svg", alt: "x" },
+  { href: "https://www.instagram.com/conductornaija?igsh=MTQ1d3Z4cGRkZG41Yg==", icon: "instagram-fill.svg", alt: "instagram" },
+  { href: "https://www.linkedin.com/company/conductor-nigeria/", icon: "linkedin-fill.svg", alt: "linkedin" },
+  // { href: "#", icon: "tiktok-fill.svg", alt: "tiktok" },
 ];
 
 const Footer = () => {

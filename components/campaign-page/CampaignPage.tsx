@@ -1,10 +1,10 @@
 "use client";
 
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
-import {ArrowRight, ChevronDown, Play, X, Loader} from "lucide-react";
+import {ArrowRight, ChevronDown, Loader, Play, X} from "lucide-react";
 
 import {satoshi} from "@/app/fonts/satoshi";
 import {cn} from "@/app/utils";
@@ -15,14 +15,42 @@ import {
     CAMPAIGN_STORE_URLS,
     DISTANCE_MATRIX_GEMINI as DISTANCE_MATRIX,
     ISLAND_LOCATIONS,
+    sendOTPVerification, completeAndNavigateToStore, resendOTPVerification, verifyOTPNumber
 } from "@/lib/campaign";
 import {Roboto} from "next/font/google";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type FrequencyKey = "daily" | "weekly" | "monthly";
-type ModalState = "idle" | "calculator" | "signup";
 type TripType = "one-way" | "round-trip";
+type Step = "phone" | "otp";
+type ModalState = "idle" | "calculator" | "signup";
+
+interface SignupModalProps {
+    variant: CampaignVariant;
+    referralCode: string;
+    phoneNumber: string;
+    countryCode: string;
+    enableRefEdit: boolean;
+    onReferralChange: (v: string) => void;
+    onPhoneChange: (v: string) => void;
+    onCountryChange: (v: string) => void;
+    /** Called when the user submits their phone number (sends OTP) */
+    onSubmit: () => Promise<void>;
+    /** Called when the OTP is verified successfully */
+    onSuccess: () => void;
+    /** Verify the OTP – resolve on success, throw/reject on failure */
+    onVerifyOtp: (otp: string) => Promise<void>;
+    /** Resend OTP request */
+    onResendOtp: () => Promise<void>;
+    isLoading: boolean;
+    onClose: () => void;
+}
+
+// ─── OTP_RESEND_SECONDS ───────────────────────────────────────────────────────
+
+const OTP_RESEND_SECONDS = 60;
+const OTP_LENGTH = 6;
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -130,24 +158,18 @@ const info: InfoProps[] = [
 ];
 
 const socialLinks = [
-    {href: "https://www.facebook.com/...", icon: "facebook.svg", alt: "facebook"},
-    {href: "https://x.com/...", icon: "twitter-x-fill.svg", alt: "x"},
-    {href: "https://www.instagram.com/...", icon: "instagram-fill.svg", alt: "instagram"},
-    {href: "https://www.linkedin.com/...", icon: "linkedin-fill.svg", alt: "linkedin"},
-    {href: "#", icon: "tiktok-fill.svg", alt: "tiktok"},
+    {href: "https://www.facebook.com/61574617154383/", icon: "facebook.svg", alt: "facebook"},
+    {href: "https://x.com/conducterng", icon: "twitter-x-fill.svg", alt: "x"},
+    {
+        href: "https://www.instagram.com/conductornaija?igsh=MTQ1d3Z4cGRkZG41Yg==",
+        icon: "instagram-fill.svg",
+        alt: "instagram"
+    },
+    {href: "https://www.linkedin.com/company/conductor-nigeria/", icon: "linkedin-fill.svg", alt: "linkedin"},
+    // {href: "#", icon: "tiktok-fill.svg", alt: "tiktok"},
 ];
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
-
-function detectPlatform(): "ios" | "android" | "web" {
-    if (typeof window === "undefined") return "web";
-    const ua = navigator.userAgent || navigator.vendor;
-    if (/android/i.test(ua)) return "android";
-    if (/iPad|iPhone|iPod/i.test(ua) || /Mac/i.test(navigator.platform))
-        return "ios";
-    return "web";
-}
-
 function formatNaira(value: number) {
     return new Intl.NumberFormat("en-NG", {
         style: "currency",
@@ -158,17 +180,207 @@ function formatNaira(value: number) {
     }).format(value);
 }
 
-const delay = (ms: number): Promise<void> => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-};
+// ─── OTP Step Component ───────────────────────────────────────────────────────
+
+function OtpStep({
+                     phoneNumber,
+                     countryCode,
+                     onVerifyOtp,
+                     onResendOtp,
+                     onSuccess,
+                 }: {
+    phoneNumber: string;
+    countryCode: string;
+    onVerifyOtp: (otp: string) => Promise<void>;
+    onResendOtp: () => Promise<void>;
+    onSuccess: () => void;
+    isLoading: boolean;
+}) {
+    const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+    const [error, setError] = useState<string | null>(null);
+    const [verifying, setVerifying] = useState(false);
+    const [resending, setResending] = useState(false);
+    const [countdown, setCountdown] = useState(OTP_RESEND_SECONDS);
+    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    // countdown timer
+    useEffect(() => {
+        if (countdown <= 0) return;
+        const id = setTimeout(() => setCountdown((c) => c - 1), 1000);
+        return () => clearTimeout(id);
+    }, [countdown]);
+
+    const focusInput = (index: number) => {
+        inputRefs.current[index]?.focus();
+    };
+
+    const handleChange = (index: number, value: string) => {
+        // allow only digits
+        const digit = value.replace(/\D/g, "").slice(-1);
+        const next = [...otp];
+        next[index] = digit;
+        setOtp(next);
+        setError(null);
+        if (digit && index < OTP_LENGTH - 1) focusInput(index + 1);
+    };
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Backspace") {
+            if (otp[index]) {
+                const next = [...otp];
+                next[index] = "";
+                setOtp(next);
+            } else if (index > 0) {
+                focusInput(index - 1);
+            }
+        } else if (e.key === "ArrowLeft" && index > 0) {
+            focusInput(index - 1);
+        } else if (e.key === "ArrowRight" && index < OTP_LENGTH - 1) {
+            focusInput(index + 1);
+        }
+    };
+
+    const handlePaste = (e: React.ClipboardEvent) => {
+        e.preventDefault();
+        const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, OTP_LENGTH);
+        const next = [...otp];
+        pasted.split("").forEach((ch, i) => {
+            next[i] = ch;
+        });
+        setOtp(next);
+        const lastFilled = Math.min(pasted.length, OTP_LENGTH - 1);
+        focusInput(lastFilled);
+    };
+
+    const handleVerify = async () => {
+        const code = otp.join("");
+        if (code.length < OTP_LENGTH) {
+            setError("Please enter the full 6-digit code.");
+            return;
+        }
+        setError(null);
+        setVerifying(true);
+        try {
+            await onVerifyOtp(code);
+            onSuccess();
+        }
+            // eslint-disable-next-line
+        catch (err: any) {
+            setError(err?.message ?? "Invalid OTP. Please try again.");
+            setOtp(Array(OTP_LENGTH).fill(""));
+            focusInput(0);
+        } finally {
+            setVerifying(false);
+        }
+    };
+
+    const handleResend = async () => {
+        if (countdown > 0 || resending) return;
+        setResending(true);
+        setError(null);
+        try {
+            await onResendOtp();
+            setCountdown(OTP_RESEND_SECONDS);
+            setOtp(Array(OTP_LENGTH).fill(""));
+            focusInput(0);
+        }
+            // eslint-disable-next-line
+        catch (err: any) {
+            setError(err?.message ?? "Failed to resend OTP. Please try again.");
+        } finally {
+            setResending(false);
+        }
+    };
+
+    const maskedPhone = `${countryCode} ${"*".repeat(Math.max(0, phoneNumber.length - 4))}${phoneNumber.slice(-4)}`;
+
+    // const inputClass =
+    //     "w-full rounded-xl bg-[#efeeec] px-4 py-3 text-sm text-[#292928] outline-none placeholder:text-[#a09e9c]";
+
+    return (
+        <div className="space-y-4">
+            <p className="text-xs text-[#676563]">
+                A 6-digit code was sent to{" "}
+                <span className="font-medium text-[#292928]">{maskedPhone}</span>
+            </p>
+
+            {/* OTP boxes */}
+            <fieldset>
+                <label className="text-xs text-[#676563]">Enter OTP</label>
+                <div
+                    className="mt-2 flex gap-2"
+                    onPaste={handlePaste}
+                >
+                    {otp.map((digit, i) => (
+                        <input
+                            key={i}
+                            ref={(el) => {
+                                inputRefs.current[i] = el;
+                            }}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleChange(i, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(i, e)}
+                            className={cn(
+                                "h-12 w-full rounded-xl bg-[#efeeec] text-center text-base font-semibold text-[#292928] outline-none transition-all",
+                                "focus:ring-2 focus:ring-[#292928]/20",
+                                error ? "ring-2 ring-red-400" : ""
+                            )}
+                            autoFocus={i === 0}
+                        />
+                    ))}
+                </div>
+            </fieldset>
+
+            {/* Error message */}
+            {error && (
+                <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-500">
+                    {error}
+                </p>
+            )}
+
+            {/* Verify button */}
+            <PrimaryButton
+                disabled={verifying || otp.join("").length < OTP_LENGTH}
+                onClick={handleVerify}
+                className="w-full flex place-items-center justify-center"
+            >
+                {verifying
+                    ? <Loader className="h-4 w-4 animate-spin"/>
+                    : "Verify & Continue"}
+            </PrimaryButton>
+
+            {/* Resend */}
+            <div className="text-center">
+                {countdown > 0 ? (
+                    <p className="text-xs text-[#a09e9c]">
+                        Resend code in{" "}
+                        <span className="font-medium text-[#676563]">{countdown}s</span>
+                    </p>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={handleResend}
+                        disabled={resending}
+                        className="text-xs font-medium text-[#292928] underline underline-offset-2 disabled:opacity-50"
+                    >
+                        {resending ? "Resending…" : "Resend OTP"}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
-const Section = ({
-                     className,
-                     children,
-                     as: Tag = "section",
-                 }: {
+export const Section = ({
+                            className,
+                            children,
+                            as: Tag = "section",
+                        }: {
     className?: string;
     children: React.ReactNode;
     as?: "section" | "div" | "nav";
@@ -297,11 +509,11 @@ function ProgressBar({value}: { value: number }) {
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
 
-function Navbar({
-                    variant,
-                    onAction,
-                    ref
-                }: {
+export function Navbar({
+                           variant,
+                           onAction,
+                           ref
+                       }: {
     variant: CampaignVariant;
     ref: string,
     onAction: () => void;
@@ -326,7 +538,6 @@ function Navbar({
                 </Link>
 
                 <div className="flex items-center gap-2">
-
                     <Link
                         href={href}
                         className="hidden rounded-full border border-[#e6e5e3] px-4 py-2 text-sm font-semibold text-tertiary hover:border-[#d7d5d2] md:inline-flex">
@@ -348,7 +559,7 @@ function Navbar({
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-function Footer({variant, ref}: { variant: CampaignVariant, ref: string }) {
+export function Footer({variant, ref}: { variant: CampaignVariant, ref: string }) {
     const currentYear = new Date().getFullYear();
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
     const href = `/campaign/${otherVariant}${ref.length === 0 ? '' : `?ref=${ref}`}`;
@@ -870,34 +1081,105 @@ function CalculatorModal({
 
 // ─── Signup Modal ────────────────────────────────────────────────────────────
 
-function SignupModal({
-                         variant,
-                         referralCode,
-                         phoneNumber,
-                         countryCode,
-                         onReferralChange,
-                         onPhoneChange,
-                         onCountryChange,
-                         onSubmit,
-                         isLoading,
-                         onClose,
-                     }: {
-    variant: CampaignVariant;
-    referralCode: string;
-    phoneNumber: string;
-    countryCode: string;
-    onReferralChange: (v: string) => void;
-    onPhoneChange: (v: string) => void;
-    onCountryChange: (v: string) => void;
-    isLoading: boolean;
-    onSubmit: () => void;
-    onClose: () => void;
-}) {
+
+export function SignupModal({
+                                variant,
+                                referralCode,
+                                phoneNumber,
+                                countryCode,
+                                onReferralChange,
+                                onPhoneChange,
+                                onCountryChange,
+                                onSubmit,
+                                onSuccess,
+                                onVerifyOtp,
+                                onResendOtp,
+                                isLoading,
+                                onClose,
+                                enableRefEdit,
+                            }: SignupModalProps) {
     const copy = COPY.signup[variant];
+    const [step, setStep] = useState<Step>("phone");
+    const [submitError, setSubmitError] = useState<string | null>(null);
+
     const inputClass =
         "w-full rounded-xl bg-[#efeeec] px-4 py-3 text-sm text-[#292928] outline-none placeholder:text-[#a09e9c]";
 
+    const handlePhoneSubmit = async () => {
+        setSubmitError(null);
+        try {
+            await onSubmit();
+            setStep("otp");
+        }
+            // eslint-disable-next-line
+        catch (err: any) {
+            setSubmitError(err?.message ?? "Something went wrong. Please try again.");
+        }
+    };
 
+    const phoneForm = (
+        <div className="space-y-4">
+            <fieldset>
+                <label className="text-xs text-[#676563]">Phone number</label>
+                <div className="mt-2 flex gap-2">
+                    <div className="relative">
+                        <select
+                            value={countryCode}
+                            onChange={(e) => onCountryChange(e.target.value)}
+                            className="w-20 appearance-none rounded-xl bg-[#efeeec] px-3 py-3 text-xs text-[#292928] outline-none"
+                        >
+                            <option value="+234">+234</option>
+                        </select>
+                        <ChevronDown
+                            className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 opacity-50"/>
+                    </div>
+                    <input
+                        value={phoneNumber}
+                        onChange={(e) => onPhoneChange(e.target.value)}
+                        placeholder="Number"
+                        className={cn(inputClass, "flex-1")}
+                    />
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <label className="text-xs text-[#676563]">Referral Code</label>
+                <input
+                    value={referralCode}
+                    onChange={(e) => onReferralChange(e.target.value)}
+                    placeholder="Enter Referral code (Optional)"
+                    readOnly={!enableRefEdit}
+                    disabled={!enableRefEdit}
+                    className={cn(inputClass, "mt-2")}
+                />
+            </fieldset>
+
+            {submitError && (
+                <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-500">
+                    {submitError}
+                </p>
+            )}
+
+            <div className="text-xs text-[0.6rem] text-[#666666] text-center">
+                By creating an account, you confirm that you have read and agree to our <a href="/terms-and-conditions"
+                                                                                           target='_blank'
+                                                                                           className="font-black underline cursor-pointer">Terms
+                & Conditions</a>.
+            </div>
+
+            <PrimaryButton
+                disabled={isLoading}
+                onClick={handlePhoneSubmit}
+                className="w-full flex place-items-center justify-center"
+            >
+                {isLoading
+                    ? <Loader className="h-4 w-4 animate-spin"/>
+                    : copy.cta}
+            </PrimaryButton>
+        </div>
+    );
+
+    // ── passenger variant ──────────────────────────────────────────────────────
     if (variant === "passenger") {
         return (
             <Modal onClose={onClose} z={320}>
@@ -906,57 +1188,27 @@ function SignupModal({
                         {/* Form */}
                         <div className="flex-1 p-6 md:px-8">
                             <div className="hidden sm:block">
+                                <p className="text-[#292928] text-3xl">{copy.title}</p>
                                 <p className="text-[#292928] text-3xl">
-                                    {copy.title}
-                                </p>
-                                <p className="text-[#292928] text-3xl">
-                                    {copy.subtitle}
+                                    {step === "otp" ? "Verify your number" : copy.subtitle}
                                 </p>
                             </div>
-
                             <div className="block sm:hidden text-2xl">
-                                {copy.title} {copy.subtitle}
+                                {copy.title}{" "}
+                                {step === "otp" ? "Verify your number" : copy.subtitle}
                             </div>
 
-                            <div className="mt-6 space-y-4">
-                                <fieldset>
-                                    <label className="text-xs text-[#676563]">Phone number</label>
-                                    <div className="mt-2 flex gap-2">
-                                        <div className="relative">
-                                            <select
-                                                value={countryCode}
-                                                onChange={(e) => onCountryChange(e.target.value)}
-                                                className="w-20 appearance-none rounded-xl bg-[#efeeec] px-3 py-3 text-xs text-[#292928] outline-none"
-                                            >
-                                                <option value="+234">+234</option>
-                                                <option value="+1">+1</option>
-                                                <option value="+44">+44</option>
-                                            </select>
-                                            <ChevronDown
-                                                className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 opacity-50"/>
-                                        </div>
-                                        <input
-                                            value={phoneNumber}
-                                            onChange={(e) => onPhoneChange(e.target.value)}
-                                            placeholder="Number"
-                                            className={cn(inputClass, "flex-1")}
-                                        />
-                                    </div>
-                                </fieldset>
-
-                                <fieldset>
-                                    <label className="text-xs text-[#676563]">Referral Code</label>
-                                    <input
-                                        value={referralCode}
-                                        onChange={(e) => onReferralChange(e.target.value)}
-                                        placeholder="Enter Referral code (Optional)"
-                                        className={cn(inputClass, "mt-2")}
+                            <div className="mt-6">
+                                {step === "phone" ? phoneForm : (
+                                    <OtpStep
+                                        phoneNumber={phoneNumber}
+                                        countryCode={countryCode}
+                                        onVerifyOtp={onVerifyOtp}
+                                        onResendOtp={onResendOtp}
+                                        onSuccess={onSuccess}
+                                        isLoading={isLoading}
                                     />
-                                </fieldset>
-
-                                <PrimaryButton onClick={onSubmit} className="w-full">
-                                    {copy.cta}
-                                </PrimaryButton>
+                                )}
                             </div>
                         </div>
 
@@ -975,6 +1227,7 @@ function SignupModal({
         );
     }
 
+    // ── driver variant ─────────────────────────────────────────────────────────
     return (
         <Modal onClose={onClose} z={320}>
             <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-xl">
@@ -997,53 +1250,24 @@ function SignupModal({
                                     {copy.title}
                                 </p>
                                 <p className="text-lg font-semibold text-[#292928] md:text-lg">
-                                    {copy.subtitle}
+                                    {step === "otp" ? "Verify your number" : copy.subtitle}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="mt-6 space-y-4">
-                            <fieldset>
-                                <label className="text-xs text-[#676563]">Phone number</label>
-                                <div className="mt-2 flex gap-2">
-                                    <div className="relative">
-                                        <select
-                                            value={countryCode}
-                                            onChange={(e) => onCountryChange(e.target.value)}
-                                            className="w-20 appearance-none rounded-xl bg-[#efeeec] px-3 py-3 text-xs text-[#292928] outline-none"
-                                        >
-                                            <option value="+234">+234</option>
-                                            <option value="+1">+1</option>
-                                            <option value="+44">+44</option>
-                                        </select>
-                                        <ChevronDown
-                                            className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 opacity-50"/>
-                                    </div>
-                                    <input
-                                        value={phoneNumber}
-                                        onChange={(e) => onPhoneChange(e.target.value)}
-                                        placeholder="Number"
-                                        className={cn(inputClass, "flex-1")}
-                                    />
-                                </div>
-                            </fieldset>
-
-                            <fieldset>
-                                <label className="text-xs text-[#676563]">Referral Code</label>
-                                <input
-                                    value={referralCode}
-                                    onChange={(e) => onReferralChange(e.target.value)}
-                                    placeholder="Enter Referral code (Optional)"
-                                    className={cn(inputClass, "mt-2")}
+                        <div className="mt-6">
+                            {step === "phone" ? phoneForm : (
+                                <OtpStep
+                                    phoneNumber={phoneNumber}
+                                    countryCode={countryCode}
+                                    onVerifyOtp={onVerifyOtp}
+                                    onResendOtp={onResendOtp}
+                                    onSuccess={onSuccess}
+                                    isLoading={isLoading}
                                 />
-                            </fieldset>
-
-                            <PrimaryButton disabled={isLoading} onClick={onSubmit}
-                                           className="w-full flex place-items-center">
-                                {isLoading && <Loader className='h-4 w-4 mx-auto animate-spin'/>}
-                                {!isLoading && copy.cta}
-                            </PrimaryButton>
+                            )}
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -1122,25 +1346,12 @@ export default function CampaignPage({
 
     const canEstimate = Boolean(startLocation && endLocation);
 
-    const handleRegister = useCallback(async () => {
-
-        setIsLoading(true);
-        // MAKE REQUEST TO SERVER, SAVE USER
-        await delay(2000);
-
-
-        setIsLoading(false);
-
-        // IF PASSENGER, SHOW TOAST
-
-
-        // IF DRIVER, NAVIGATE TO APP/PLAY STORE
-        const platform = detectPlatform();
-        const urls = CAMPAIGN_STORE_URLS[variant];
-        window.location.href = platform === "ios" ? urls.ios : urls.android;
-    }, [variant]);
-
     const closeModal = useCallback(() => setModal("idle"), []);
+
+    const onVerifyOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
+    const onResendOtp = useCallback(() => resendOTPVerification(), [])
+    const onSuccess = useCallback(() => completeAndNavigateToStore(variant), [variant])
+    const onSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
 
     return (
         <>
@@ -1183,9 +1394,13 @@ export default function CampaignPage({
                         onReferralChange={setReferralCode}
                         onPhoneChange={setPhoneNumber}
                         onCountryChange={setCountryCode}
-                        onSubmit={handleRegister}
                         isLoading={isLoading}
+                        onSubmit={onSubmit}
                         onClose={closeModal}
+                        onSuccess={onSuccess}
+                        onVerifyOtp={onVerifyOtp}
+                        onResendOtp={onResendOtp}
+                        enableRefEdit={true}
                     />
                 )}
 

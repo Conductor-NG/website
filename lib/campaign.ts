@@ -238,3 +238,52 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
     "21_111": 19.0, "21_112": 20.0, "21_113": 18.0, "21_114": 13.0,
     "22_111": 23.0, "22_112": 24.0, "22_113": 22.0, "22_114": 10.0,
 };
+
+// ---- FUNCTIONS --------------------------------------------------
+const delay = (ms: number): Promise<void> => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+const detectPlatform = (): "ios" | "android" | "web" => {
+    if (typeof window === "undefined") return "web";
+    const ua = navigator.userAgent || navigator.vendor;
+    if (/android/i.test(ua)) return "android";
+    if (/iPad|iPhone|iPod/i.test(ua) || /Mac/i.test(navigator.platform))
+        return "ios";
+    return "web";
+}
+export const verifyOTPNumber = async (otp: string) => {
+    console.log(otp);
+    // MAKE CALL TO VERIFY OTP
+};
+export const resendOTPVerification = async () => {
+    // MAKE CALL TO SEND OTP
+}
+export const sendOTPVerification = async (phoneNumber: string, setLoader: (value: boolean) => void) => {
+    if (phoneNumber.length < 1) {
+        throw new Error("Phone number is required");
+    }
+
+    const phoneNumValid = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(phoneNumber);
+
+    if (!phoneNumValid) {
+        throw new Error("Invalid phone number");
+    }
+
+    setLoader(true);
+    // // MAKE CALL TO SEND OTP
+    await delay(2000);
+    setLoader(false);
+    throw new Error('Network Error - Try again later');
+
+    // IF ERROR, THROW
+}
+
+export const completeAndNavigateToStore = async (variant: CampaignVariant, selectedPlatform?: 'ios' | 'android' | 'web') => {
+    // IF PASSENGER, SHOW TOAST
+
+    // IF DRIVER, NAVIGATE TO APP/PLAY STORE
+    const platform = selectedPlatform ?? detectPlatform();
+    const urls = CAMPAIGN_STORE_URLS[variant];
+    window.location.href = platform === "ios" ? urls.ios : urls.android;
+}
