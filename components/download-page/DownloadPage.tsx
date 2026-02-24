@@ -116,13 +116,6 @@ const NavBar = ({onAction, variant, ref}: { variant: CampaignVariant; ref: strin
                             </Link>
                         </span>
 
-                        <Link href={href}>
-                            <button
-                                className="hover:rounded-none transition-all duration-300 bg-white  py-[12px] px-[16px] font-[500] rounded-[30px] border-[#E6E5E3] border-solid border-[1px] text-[14px]">
-                                {variant === 'driver' ? "Conductor.ng for Passengers" : "Conductor.ng for Car Owners"}
-                            </button>
-                        </Link>
-
                         <span onClick={() => setToggleMenu(!toggleMenu)}>
             {!toggleMenu && (
                 <Menu
@@ -234,7 +227,7 @@ const NavBar = ({onAction, variant, ref}: { variant: CampaignVariant; ref: strin
     );
 };
 
-export default function DownloadsPage({
+export default function DownloadPage({
                                           variant,
                                       }: {
     variant: CampaignVariant;

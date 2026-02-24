@@ -1,6 +1,6 @@
 import {Suspense} from "react";
-import DownloadsPage from "@/components/download-page/DownloadsPage";
+import DownloadPage from "@/components/download-page/DownloadPage";
 
 export default function DriverDownloadsPage() {
-    return (<Suspense fallback={null}> <DownloadsPage variant="driver"/> </Suspense>);
+    return (<Suspense fallback={null}> <DownloadPage variant="driver"/> </Suspense>);
 }
