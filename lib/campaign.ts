@@ -274,7 +274,7 @@ export const sendOTPVerification = async (phoneNumber: string, setLoader: (value
     // // MAKE CALL TO SEND OTP
     await delay(2000);
     setLoader(false);
-    throw new Error('Network Error - Try again later');
+    // throw new Error('Network Error - Try again later');
 
     // IF ERROR, THROW
 }
