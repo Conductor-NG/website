@@ -106,7 +106,7 @@ const NavBar = ({onAction, variant, ref}: { variant: CampaignVariant; ref: strin
                         <span className="hover:scale-[1.1] ">
                             <Link href="/">
                                 <Image
-                                    className="w-[28px] h-[28px] md:w-[50px] md:h-[50px]"
+                                    className="w-[35] h-[35px] md:w-[50px] md:h-[50px]"
                                     src="/images/conductor.svg"
                                     alt="Conductor logo"
                                     width={40}
