@@ -1142,7 +1142,7 @@ export function SignupModal({
                 </div>
             </fieldset>
 
-            <fieldset>
+            {enableRefEdit && (<fieldset>
                 <label className="text-xs text-[#676563]">Referral Code</label>
                 <input
                     value={referralCode}
@@ -1152,7 +1152,7 @@ export function SignupModal({
                     disabled={!enableRefEdit}
                     className={cn(inputClass, "mt-2")}
                 />
-            </fieldset>
+            </fieldset>)}
 
             {submitError && (
                 <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-500">
@@ -1183,7 +1183,7 @@ export function SignupModal({
     if (variant === "passenger") {
         return (
             <Modal onClose={onClose} z={320}>
-                <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-xl">
+                <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-2xl">
                     <div className="flex flex-col md:flex-row">
                         {/* Form */}
                         <div className="flex-1 p-6 md:px-8">
@@ -1230,7 +1230,7 @@ export function SignupModal({
     // ── driver variant ─────────────────────────────────────────────────────────
     return (
         <Modal onClose={onClose} z={320}>
-            <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-xl">
+            <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-2xl">
                 <div className="flex flex-col md:flex-row">
                     {/* Side image */}
                     <div className="relative hidden w-full md:block md:w-3/6">
@@ -1400,7 +1400,7 @@ export default function CampaignPage({
                         onSuccess={onSuccess}
                         onVerifyOtp={onVerifyOtp}
                         onResendOtp={onResendOtp}
-                        enableRefEdit={true}
+                        enableRefEdit={false}
                     />
                 )}
 
