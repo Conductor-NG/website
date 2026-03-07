@@ -1139,6 +1139,7 @@ export function SignupModal({
         setSubmitError(null);
         try {
             await onPhoneNumberSubmit();
+            console.log({referralCode})
             setStep("otp");
         }
             // eslint-disable-next-line
