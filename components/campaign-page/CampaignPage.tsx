@@ -671,10 +671,33 @@ export function Footer({variant, ref}: { variant: CampaignVariant, ref: string }
 }
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
-
-function HeroSection({variant}: { variant: CampaignVariant }) {
+function HeroSection({ variant }: { variant: CampaignVariant }) {
     const isDriver = variant === "driver";
     const copy = COPY.hero[variant];
+
+    // 1. Track if the user is in "active watching" mode
+    const [isWatching, setIsWatching] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    const handleStartWatching = () => {
+        if (videoRef.current) {
+            videoRef.current.currentTime = 0; // Restart for full context
+            videoRef.current.muted = false;   // Unmute since user expressed intent
+            videoRef.current.play();
+            setIsWatching(true);
+        }
+    };
+
+    const handleStopWatching = (e?: React.MouseEvent) => {
+        // If e is present, prevent the click from bubbling (e.g., if we had links behind)
+        e?.stopPropagation();
+
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.muted = true; // Re-mute for background feel
+            setIsWatching(false);
+        }
+    };
 
     return (
         <Section className="pb-8 pt-10 md:pt-16">
@@ -688,52 +711,58 @@ function HeroSection({variant}: { variant: CampaignVariant }) {
                     <div className="space-y-3">
                         <div className="flex items-center justify-between text-base text-[#676563]">
                             <span>{copy.subtitle}</span>
-                            <span>
-                {(copy as (typeof COPY)["hero"]["driver"]).progress}%
-              </span>
+                            <span>{(copy as (typeof COPY)["hero"]["driver"]).progress}%</span>
                         </div>
-                        <ProgressBar
-                            value={(copy as (typeof COPY)["hero"]["driver"]).progress}
-                        />
+                        <ProgressBar value={(copy as (typeof COPY)["hero"]["driver"]).progress} />
                     </div>
                 ) : (
-                    <p className="text-base text-[#676563] md:text-3xl">
-                        {copy.subtitle}
-                    </p>
+                    <p className="text-base text-[#676563] md:text-3xl">{copy.subtitle}</p>
                 )}
             </div>
 
-            <div className="relative mt-8">
+            <div className="relative mt-8 group">
                 <video
-                    src="/videos/hero_desktop.mp4"
+                    ref={videoRef}
+                    src={variant === "driver" ? "/videos/DRIVER.mp4" : "/videos/PASSENGER.mp4"}
                     autoPlay
                     muted
                     loop
                     playsInline
-                    className="hidden w-full rounded-3xl md:block"
-                />
-                <video
-                    src="/videos/hero_mobile.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full rounded-2xl md:hidden"
+                    // 2. Clicking the video itself stops playback and shows the button
+                    onClick={isWatching ? () => handleStopWatching() : undefined}
+                    className={`w-full rounded-2xl transition-all ${
+                        isWatching ? "cursor-pointer" : "cursor-default"
+                    }`}
                 />
 
-                <div
-                    className="absolute bottom-4 rounded-br-[42px] rounded-tr-lg bg-[#f1ebe4] px-5 py-4 shadow-sm md:bottom-6 md:left-0 md:w-60">
-                    <p className="text-sm font-light text-[#302f2f]">
-                        See How Conductor Works in Real Life
-                    </p>
-                    <div className="mt-2 flex items-center gap-3 text-xs text-[#302f2f]">
-                        <span>Watch video</span>
-                        <span
-                            className="flex size-4 items-center justify-center rounded-full border border-primary text-primary">
-              <Play className="ml-px size-2 fill-primary stroke-primary"/>
-            </span>
-                    </div>
-                </div>
+                {/* 3. The Pause/Close Overlay (Visible when watching) */}
+                {isWatching && (
+                    <button
+                        onClick={handleStopWatching}
+                        className="absolute top-4 right-4 z-10 size-10 flex items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-opacity opacity-100 md:opacity-0 group-hover:opacity-100 hover:bg-black/70"
+                        aria-label="Stop video"
+                    >
+                        <X className="size-6" />
+                    </button>
+                )}
+
+                {/* 4. The "Watch" Overlay Button (Visible when NOT watching) */}
+                {!isWatching && (
+                    <button
+                        onClick={handleStartWatching}
+                        className="absolute bottom-4 left-0 rounded-br-[42px] rounded-tr-lg bg-[#f1ebe4] px-5 py-4 text-left shadow-sm transition-opacity hover:bg-[#eaddd0] md:bottom-6 md:w-60"
+                    >
+                        <p className="text-sm font-light text-[#302f2f]">
+                            See How Conductor Works in Real Life
+                        </p>
+                        <div className="mt-2 flex items-center gap-3 text-xs text-[#302f2f]">
+                            <span>Watch video</span>
+                            <span className="flex size-4 items-center justify-center rounded-full border border-primary text-primary">
+                <Play className="ml-px size-2 fill-primary stroke-primary" />
+              </span>
+                        </div>
+                    </button>
+                )}
             </div>
         </Section>
     );
