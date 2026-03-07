@@ -259,10 +259,10 @@ export default function DownloadPage({
 
     const closeModal = useCallback(() => setModal("idle"), []);
 
-    const onVerifyOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
-    const onResendOtp = useCallback(() => resendOTPVerification(), [])
-    const onSuccess = useCallback(() => completeAndNavigateToStore(variant, platform), [variant, platform])
-    const onSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
+    const onVerifyPhoneOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
+    const onResendPhoneOtp = useCallback(() => resendOTPVerification(), [])
+    const onOtpVerifySuccess = useCallback(() => completeAndNavigateToStore(variant, platform), [variant, platform])
+    const onPhoneNumberSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
 
     const onDownloadImageClick = useCallback((p: 'ios' | 'android') => {
         setPlatform(p);
@@ -349,12 +349,12 @@ export default function DownloadPage({
                         onPhoneChange={setPhoneNumber}
                         onCountryChange={setCountryCode}
                         isLoading={isLoading}
-                        onSubmit={onSubmit}
                         onClose={closeModal}
-                        onSuccess={onSuccess}
-                        onVerifyOtp={onVerifyOtp}
-                        onResendOtp={onResendOtp}
-                        enableRefEdit={false}
+                        onPhoneNumberSubmit={onPhoneNumberSubmit}
+                        onOtpVerifySuccess={onOtpVerifySuccess}
+                        onVerifyPhoneOtp={onVerifyPhoneOtp}
+                        onResendPhoneOtp={onResendPhoneOtp}
+                        enableUserRefCode={false}
                     />
                 )}
 

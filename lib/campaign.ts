@@ -239,6 +239,54 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
     "22_111": 23.0, "22_112": 24.0, "22_113": 22.0, "22_114": 10.0,
 };
 
+// ---- HELPERS --------------------------------------------------
+type FetchPostOptions = Omit<RequestInit, "method" | "body">;
+
+type ApiError = {
+    message: string;
+    code: string;
+    status: number;
+};
+
+type ApiResponse<T> =
+    | { ok: true; data: T; status: number }
+    | { ok: false; error: ApiError };
+
+export async function fetchPost<TBody, TResponse>(
+    url: string,
+    body: TBody,
+    options?: FetchPostOptions
+): Promise<ApiResponse<TResponse>> {
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...options?.headers,
+            },
+            ...options,
+            body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+            const error: ApiError = await res.json();
+            return { ok: false, error };
+        }
+
+        const data: TResponse = await res.json();
+        return { ok: true, data, status: res.status };
+    } catch (err) {
+        return {
+            ok: false,
+            error: {
+                message: err instanceof Error ? err.message : "Unknown error",
+                code: "NETWORK_ERROR",
+                status: 0,
+            },
+        };
+    }
+}
+
 // ---- FUNCTIONS --------------------------------------------------
 const delay = (ms: number): Promise<void> => {
     return new Promise((resolve) => setTimeout(resolve, ms));

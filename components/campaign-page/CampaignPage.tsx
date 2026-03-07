@@ -31,18 +31,18 @@ interface SignupModalProps {
     referralCode: string;
     phoneNumber: string;
     countryCode: string;
-    enableRefEdit: boolean;
+    enableUserRefCode: boolean;
     onReferralChange: (v: string) => void;
     onPhoneChange: (v: string) => void;
     onCountryChange: (v: string) => void;
     /** Called when the user submits their phone number (sends OTP) */
-    onSubmit: () => Promise<void>;
+    onPhoneNumberSubmit: () => Promise<void>;
     /** Called when the OTP is verified successfully */
-    onSuccess: () => void;
+    onOtpVerifySuccess: () => void;
     /** Verify the OTP – resolve on success, throw/reject on failure */
-    onVerifyOtp: (otp: string) => Promise<void>;
+    onVerifyPhoneOtp: (otp: string) => Promise<void>;
     /** Resend OTP request */
-    onResendOtp: () => Promise<void>;
+    onResendPhoneOtp: () => Promise<void>;
     isLoading: boolean;
     onClose: () => void;
 }
@@ -671,7 +671,7 @@ export function Footer({variant, ref}: { variant: CampaignVariant, ref: string }
 }
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
-function HeroSection({ variant }: { variant: CampaignVariant }) {
+function HeroSection({variant}: { variant: CampaignVariant }) {
     const isDriver = variant === "driver";
     const copy = COPY.hero[variant];
 
@@ -713,7 +713,7 @@ function HeroSection({ variant }: { variant: CampaignVariant }) {
                             <span>{copy.subtitle}</span>
                             <span>{(copy as (typeof COPY)["hero"]["driver"]).progress}%</span>
                         </div>
-                        <ProgressBar value={(copy as (typeof COPY)["hero"]["driver"]).progress} />
+                        <ProgressBar value={(copy as (typeof COPY)["hero"]["driver"]).progress}/>
                     </div>
                 ) : (
                     <p className="text-base text-[#676563] md:text-3xl">{copy.subtitle}</p>
@@ -742,7 +742,7 @@ function HeroSection({ variant }: { variant: CampaignVariant }) {
                         className="absolute top-4 right-4 z-10 size-10 flex items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-opacity opacity-100 md:opacity-0 group-hover:opacity-100 hover:bg-black/70"
                         aria-label="Stop video"
                     >
-                        <X className="size-6" />
+                        <X className="size-6"/>
                     </button>
                 )}
 
@@ -757,8 +757,9 @@ function HeroSection({ variant }: { variant: CampaignVariant }) {
                         </p>
                         <div className="mt-2 flex items-center gap-3 text-xs text-[#302f2f]">
                             <span>Watch video</span>
-                            <span className="flex size-4 items-center justify-center rounded-full border border-primary text-primary">
-                <Play className="ml-px size-2 fill-primary stroke-primary" />
+                            <span
+                                className="flex size-4 items-center justify-center rounded-full border border-primary text-primary">
+                <Play className="ml-px size-2 fill-primary stroke-primary"/>
               </span>
                         </div>
                     </button>
@@ -1116,19 +1117,19 @@ export function SignupModal({
                                 referralCode,
                                 phoneNumber,
                                 countryCode,
-                                onReferralChange,
                                 onPhoneChange,
                                 onCountryChange,
-                                onSubmit,
-                                onSuccess,
-                                onVerifyOtp,
-                                onResendOtp,
+                                onPhoneNumberSubmit,
+                                onOtpVerifySuccess,
+                                onVerifyPhoneOtp,
+                                onResendPhoneOtp,
                                 isLoading,
                                 onClose,
-                                enableRefEdit,
+                                enableUserRefCode,
                             }: SignupModalProps) {
     const copy = COPY.signup[variant];
     const [step, setStep] = useState<Step>("phone");
+    const [userRefCode, setUserRefCode] = useState<string>('');
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     const inputClass =
@@ -1137,7 +1138,7 @@ export function SignupModal({
     const handlePhoneSubmit = async () => {
         setSubmitError(null);
         try {
-            await onSubmit();
+            await onPhoneNumberSubmit();
             setStep("otp");
         }
             // eslint-disable-next-line
@@ -1171,14 +1172,12 @@ export function SignupModal({
                 </div>
             </fieldset>
 
-            {enableRefEdit && (<fieldset>
+            {enableUserRefCode && (<fieldset>
                 <label className="text-xs text-[#676563]">Referral Code</label>
                 <input
-                    value={referralCode}
-                    onChange={(e) => onReferralChange(e.target.value)}
+                    value={userRefCode}
+                    onChange={(e) => setUserRefCode(e.target.value)}
                     placeholder="Enter Referral code (Optional)"
-                    readOnly={!enableRefEdit}
-                    disabled={!enableRefEdit}
                     className={cn(inputClass, "mt-2")}
                 />
             </fieldset>)}
@@ -1232,9 +1231,9 @@ export function SignupModal({
                                     <OtpStep
                                         phoneNumber={phoneNumber}
                                         countryCode={countryCode}
-                                        onVerifyOtp={onVerifyOtp}
-                                        onResendOtp={onResendOtp}
-                                        onSuccess={onSuccess}
+                                        onVerifyOtp={onVerifyPhoneOtp}
+                                        onResendOtp={onResendPhoneOtp}
+                                        onSuccess={onOtpVerifySuccess}
                                         isLoading={isLoading}
                                     />
                                 )}
@@ -1289,9 +1288,9 @@ export function SignupModal({
                                 <OtpStep
                                     phoneNumber={phoneNumber}
                                     countryCode={countryCode}
-                                    onVerifyOtp={onVerifyOtp}
-                                    onResendOtp={onResendOtp}
-                                    onSuccess={onSuccess}
+                                    onVerifyOtp={onVerifyPhoneOtp}
+                                    onResendOtp={onResendPhoneOtp}
+                                    onSuccess={onOtpVerifySuccess}
                                     isLoading={isLoading}
                                 />
                             )}
@@ -1377,10 +1376,10 @@ export default function CampaignPage({
 
     const closeModal = useCallback(() => setModal("idle"), []);
 
-    const onVerifyOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
-    const onResendOtp = useCallback(() => resendOTPVerification(), [])
-    const onSuccess = useCallback(() => completeAndNavigateToStore(variant), [variant])
-    const onSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
+    const onVerifyPhoneOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
+    const onResendPhoneOtp = useCallback(() => resendOTPVerification(), [])
+    const onOtpVerifySuccess = useCallback(() => completeAndNavigateToStore(variant), [variant])
+    const onPhoneNumberSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
 
     return (
         <>
@@ -1424,12 +1423,12 @@ export default function CampaignPage({
                         onPhoneChange={setPhoneNumber}
                         onCountryChange={setCountryCode}
                         isLoading={isLoading}
-                        onSubmit={onSubmit}
                         onClose={closeModal}
-                        onSuccess={onSuccess}
-                        onVerifyOtp={onVerifyOtp}
-                        onResendOtp={onResendOtp}
-                        enableRefEdit={false}
+                        onPhoneNumberSubmit={onPhoneNumberSubmit}
+                        onOtpVerifySuccess={onOtpVerifySuccess}
+                        onVerifyPhoneOtp={onVerifyPhoneOtp}
+                        onResendPhoneOtp={onResendPhoneOtp}
+                        enableUserRefCode={true}
                     />
                 )}
 
