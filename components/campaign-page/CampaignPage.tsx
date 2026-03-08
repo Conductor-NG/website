@@ -15,7 +15,10 @@ import {
     CAMPAIGN_STORE_URLS,
     DISTANCE_MATRIX_GEMINI as DISTANCE_MATRIX,
     ISLAND_LOCATIONS,
-    sendOTPVerification, completeAndNavigateToStore, verifyOTPNumber, CAMPAIGN_SOURCE_STORAGE_KEY, toQueryString
+    sendOTPVerification,
+    completeAndNavigateToStore,
+    verifyOTPNumber,
+    toQueryString
 } from "@/lib/campaign";
 import {Roboto} from "next/font/google";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
@@ -1132,7 +1135,6 @@ export function SignupModal({
                             }: SignupModalProps) {
     const copy = COPY.signup[variant];
     const [step, setStep] = useState<Step>("phone");
-    const [userRefCode, setUserRefCode] = useState<string>('');
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     const inputClass =
@@ -1178,8 +1180,8 @@ export function SignupModal({
             {enableReferralCodeInput && (<fieldset>
                 <label className="text-xs text-[#676563]">Referral Code</label>
                 <input
-                    value={userRefCode}
-                    onChange={(e) => setUserRefCode(e.target.value)}
+                    value={referralCode}
+                    onChange={(e) => onPhoneChange(e.target.value)}
                     placeholder="Enter Referral code (Optional)"
                     className={cn(inputClass, "mt-2")}
                 />

@@ -9,8 +9,10 @@ import {cn} from "@/app/utils";
 import {
     CampaignVariant,
     CAMPAIGN_REFERRAL_STORAGE_KEY,
-    verifyOTPNumber, completeAndNavigateToStore, sendOTPVerification, toQueryString,
-    CAMPAIGN_SOURCE_STORAGE_KEY,
+    verifyOTPNumber,
+    completeAndNavigateToStore,
+    sendOTPVerification,
+    toQueryString,
 } from "@/lib/campaign";
 import {Footer, SignupModal} from "@/components/campaign-page/CampaignPage";
 import {Roboto} from "next/font/google";
