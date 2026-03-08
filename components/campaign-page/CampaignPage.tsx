@@ -749,11 +749,16 @@ function HeroSection({variant}: { variant: CampaignVariant }) {
             <div className="relative mt-8 group">
                 <video
                     ref={videoRef}
-                    src={variant === "driver" ? "/videos/DRIVER.mp4" : "/videos/PASSENGER.mp4"}
+                    src={
+                        variant === "driver"
+                            ? "https://4llzjp7gyg8kzquh.public.blob.vercel-storage.com/uploads/videos/campaign/DRIVER.mp4"
+                            : "https://4llzjp7gyg8kzquh.public.blob.vercel-storage.com/uploads/videos/campaign/PASSENGER.mp4"
+                    }
                     autoPlay
                     muted
                     loop
                     playsInline
+                    poster={'/images/logo.svg'}
                     // 2. Clicking the video itself stops playback and shows the button
                     onClick={isWatching ? () => handleStopWatching() : undefined}
                     className={`w-full rounded-2xl transition-all ${
