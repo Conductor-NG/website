@@ -15,9 +15,10 @@ import {
     CAMPAIGN_STORE_URLS,
     DISTANCE_MATRIX_GEMINI as DISTANCE_MATRIX,
     ISLAND_LOCATIONS,
-    sendOTPVerification, completeAndNavigateToStore, resendOTPVerification, verifyOTPNumber
+    sendOTPVerification, completeAndNavigateToStore, verifyOTPNumber, CAMPAIGN_SOURCE_STORAGE_KEY, toQueryString
 } from "@/lib/campaign";
 import {Roboto} from "next/font/google";
+import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -31,7 +32,7 @@ interface SignupModalProps {
     referralCode: string;
     phoneNumber: string;
     countryCode: string;
-    enableUserRefCode: boolean;
+    enableReferralCodeInput: boolean;
     onReferralChange: (v: string) => void;
     onPhoneChange: (v: string) => void;
     onCountryChange: (v: string) => void;
@@ -294,9 +295,6 @@ function OtpStep({
 
     const maskedPhone = `${countryCode} ${"*".repeat(Math.max(0, phoneNumber.length - 4))}${phoneNumber.slice(-4)}`;
 
-    // const inputClass =
-    //     "w-full rounded-xl bg-[#efeeec] px-4 py-3 text-sm text-[#292928] outline-none placeholder:text-[#a09e9c]";
-
     return (
         <div className="space-y-4">
             <p className="text-xs text-[#676563]">
@@ -512,15 +510,17 @@ function ProgressBar({value}: { value: number }) {
 export function Navbar({
                            variant,
                            onAction,
-                           ref
+                           source,
+                           ref,
                        }: {
     variant: CampaignVariant;
-    ref: string,
+    ref: string | undefined,
+    source: string | undefined,
     onAction: () => void;
 }) {
     const isDriver = variant === "driver";
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
-    const href = `/campaign/${otherVariant}${ref.length === 0 ? '' : `?ref=${ref}`}`;
+    const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
     const label = isDriver ? "Download App" : "Register";
 
     return (
@@ -559,11 +559,14 @@ export function Navbar({
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-export function Footer({variant, ref}: { variant: CampaignVariant, ref: string }) {
+export function Footer({variant, ref, source}: {
+    variant: CampaignVariant,
+    ref: string | undefined,
+    source: string | undefined
+}) {
     const currentYear = new Date().getFullYear();
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
-    const href = `/campaign/${otherVariant}${ref.length === 0 ? '' : `?ref=${ref}`}`;
-
+    const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
 
     return (
         <footer className="w-full text-white bg-[#0A0704]">
@@ -1125,7 +1128,7 @@ export function SignupModal({
                                 onResendPhoneOtp,
                                 isLoading,
                                 onClose,
-                                enableUserRefCode,
+                                enableReferralCodeInput,
                             }: SignupModalProps) {
     const copy = COPY.signup[variant];
     const [step, setStep] = useState<Step>("phone");
@@ -1139,7 +1142,6 @@ export function SignupModal({
         setSubmitError(null);
         try {
             await onPhoneNumberSubmit();
-            console.log({referralCode})
             setStep("otp");
         }
             // eslint-disable-next-line
@@ -1173,7 +1175,7 @@ export function SignupModal({
                 </div>
             </fieldset>
 
-            {enableUserRefCode && (<fieldset>
+            {enableReferralCodeInput && (<fieldset>
                 <label className="text-xs text-[#676563]">Referral Code</label>
                 <input
                     value={userRefCode}
@@ -1313,8 +1315,11 @@ export default function CampaignPage({
 }) {
     const isDriver = variant === "driver";
     const searchParams = useSearchParams();
+    const {executeRecaptcha} = useGoogleReCaptcha();
 
-    const [referralCode, setReferralCode] = useState("");
+    const [marketerCode, setMarketerCode] = useState<string | undefined>(undefined);
+    const [referralCode, setReferralCode] = useState<string>('');
+    const [utmChannel, setUtmChannel] = useState<string>('direct_link');
     const [phoneNumber, setPhoneNumber] = useState("");
     const [countryCode, setCountryCode] = useState("+234");
     const [startLocation, setStartLocation] = useState("");
@@ -1329,17 +1334,21 @@ export default function CampaignPage({
         const ref = searchParams.get("ref");
         if (ref) {
             localStorage.setItem(CAMPAIGN_REFERRAL_STORAGE_KEY, ref);
-            setReferralCode(ref);
+            setMarketerCode(ref);
         } else {
             const stored = localStorage.getItem(CAMPAIGN_REFERRAL_STORAGE_KEY);
-            if (stored) setReferralCode(stored);
+            if (stored) setMarketerCode(stored);
+        }
+
+        const source = searchParams.get("utm_source");
+        if (source) {
+            setUtmChannel(source);
         }
     }, [searchParams]);
-
     useEffect(() => {
-        if (referralCode)
-            localStorage.setItem(CAMPAIGN_REFERRAL_STORAGE_KEY, referralCode);
-    }, [referralCode]);
+        if (marketerCode)
+            localStorage.setItem(CAMPAIGN_REFERRAL_STORAGE_KEY, marketerCode);
+    }, [marketerCode]);
 
     // Estimate calculation
     const baseEstimate = useMemo(() => {
@@ -1377,15 +1386,35 @@ export default function CampaignPage({
 
     const closeModal = useCallback(() => setModal("idle"), []);
 
-    const onVerifyPhoneOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
-    const onResendPhoneOtp = useCallback(() => resendOTPVerification(), [])
+    const onPhoneNumberSubmit = useCallback(async () => {
+        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
+        // Generate the token for a specific action
+        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        return sendOTPVerification(phoneNumber, token, variant, marketerCode, referralCode || undefined, setIsLoading);
+    }, [phoneNumber, variant, marketerCode, referralCode, executeRecaptcha]);
+
+    const onResendPhoneOtp = useCallback(async () => {
+        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
+
+        // Generate the token for a specific action
+        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        return sendOTPVerification(phoneNumber, token, variant, marketerCode, referralCode || undefined, setIsLoading);
+    }, [phoneNumber, variant, marketerCode, referralCode, executeRecaptcha]);
+
+    const onVerifyPhoneOtp = useCallback(async (otp: string) => {
+        const action = variant === 'passenger' ? 'verify_passenger_acquisition_phone_otp' : 'verify_driver_acquisition_phone_otp';
+
+        // Generate the token for a specific action
+        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        return verifyOTPNumber(phoneNumber, otp, token, variant, utmChannel, marketerCode, referralCode || undefined);
+    }, [phoneNumber, variant, utmChannel, marketerCode, referralCode, executeRecaptcha]);
+
     const onOtpVerifySuccess = useCallback(() => completeAndNavigateToStore(variant), [variant])
-    const onPhoneNumberSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
 
     return (
         <>
             <div className={cn("min-h-screen bg-white", satoshi.className)}>
-                <Navbar variant={variant} ref={referralCode} onAction={() => setModal("signup")}/>
+                <Navbar variant={variant} ref={marketerCode} source={utmChannel} onAction={() => setModal("signup")}/>
 
                 <HeroSection variant={variant}/>
 
@@ -1429,11 +1458,11 @@ export default function CampaignPage({
                         onOtpVerifySuccess={onOtpVerifySuccess}
                         onVerifyPhoneOtp={onVerifyPhoneOtp}
                         onResendPhoneOtp={onResendPhoneOtp}
-                        enableUserRefCode={true}
+                        enableReferralCodeInput={true}
                     />
                 )}
 
-                <Footer variant={variant} ref={referralCode}/>
+                <Footer variant={variant} ref={marketerCode} source={utmChannel}/>
             </div>
         </>
     );

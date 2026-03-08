@@ -9,13 +9,15 @@ import {cn} from "@/app/utils";
 import {
     CampaignVariant,
     CAMPAIGN_REFERRAL_STORAGE_KEY,
-    verifyOTPNumber, resendOTPVerification, completeAndNavigateToStore, sendOTPVerification,
+    verifyOTPNumber, completeAndNavigateToStore, sendOTPVerification, toQueryString,
+    CAMPAIGN_SOURCE_STORAGE_KEY,
 } from "@/lib/campaign";
 import {Footer, SignupModal} from "@/components/campaign-page/CampaignPage";
 import {Roboto} from "next/font/google";
 import Link from "next/link";
 import {useAppSelector} from "@/lib/redux/hooks";
 import {CircleX, Menu} from "lucide-react";
+import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 
 type ModalState = "idle" | "signup";
 
@@ -43,12 +45,17 @@ export function Button({
     );
 }
 
-const NavBar = ({onAction, variant, ref}: { variant: CampaignVariant; ref: string; onAction: () => void; }) => {
+const NavBar = ({onAction, variant, ref, source}: {
+    variant: CampaignVariant;
+    ref: string | undefined;
+    source: string | undefined;
+    onAction: () => void;
+}) => {
     const scrollY = useAppSelector((state) => state.onScrollSlice.value);
     const [toggleMenu, setToggleMenu] = useState(false);
 
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
-    const href = `/downloads/${otherVariant}${ref.length === 0 ? '' : `?ref=${ref}`}`;
+    const href = `/downloads/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
 
     return (
         <>
@@ -228,14 +235,17 @@ const NavBar = ({onAction, variant, ref}: { variant: CampaignVariant; ref: strin
 };
 
 export default function DownloadPage({
-                                          variant,
-                                      }: {
+                                         variant,
+                                     }: {
     variant: CampaignVariant;
 }) {
     const searchParams = useSearchParams();
+    const {executeRecaptcha} = useGoogleReCaptcha();
+
     const [modal, setModal] = useState<ModalState>("idle");
     const [platform, setPlatform] = useState<'ios' | 'android'>("ios");
-    const [referralCode, setReferralCode] = useState("");
+    const [marketerCode, setMarketerCode] = useState<string | undefined>(undefined);
+    const [utmChannel, setUtmChannel] = useState<string>('direct_link');
     const [phoneNumber, setPhoneNumber] = useState("");
     const [countryCode, setCountryCode] = useState("+234");
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -245,24 +255,48 @@ export default function DownloadPage({
         const ref = searchParams.get("ref");
         if (ref) {
             localStorage.setItem(CAMPAIGN_REFERRAL_STORAGE_KEY, ref);
-            setReferralCode(ref);
+            setMarketerCode(ref);
         } else {
             const stored = localStorage.getItem(CAMPAIGN_REFERRAL_STORAGE_KEY);
-            if (stored) setReferralCode(stored);
+            if (stored) setMarketerCode(stored);
+        }
+
+        const source = searchParams.get("utm_source");
+        if (source) {
+            setUtmChannel(source);
         }
     }, [searchParams]);
-
     useEffect(() => {
-        if (referralCode)
-            localStorage.setItem(CAMPAIGN_REFERRAL_STORAGE_KEY, referralCode);
-    }, [referralCode]);
+        if (marketerCode)
+            localStorage.setItem(CAMPAIGN_REFERRAL_STORAGE_KEY, marketerCode);
+    }, [marketerCode]);
 
     const closeModal = useCallback(() => setModal("idle"), []);
 
-    const onVerifyPhoneOtp = useCallback(async (otp: string) => verifyOTPNumber(otp), [])
-    const onResendPhoneOtp = useCallback(() => resendOTPVerification(), [])
+    const onPhoneNumberSubmit = useCallback(async () => {
+        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
+        // Generate the token for a specific action
+        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        return sendOTPVerification(phoneNumber, token, variant, marketerCode, undefined, setIsLoading);
+    }, [phoneNumber, variant, marketerCode, executeRecaptcha]);
+
+    const onResendPhoneOtp = useCallback(async () => {
+        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
+
+        // Generate the token for a specific action
+        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        return sendOTPVerification(phoneNumber, token, variant, marketerCode, undefined, setIsLoading);
+    }, [phoneNumber, variant, marketerCode, executeRecaptcha]);
+
+    const onVerifyPhoneOtp = useCallback(async (otp: string) => {
+        const action = variant === 'passenger' ? 'verify_passenger_acquisition_phone_otp' : 'verify_driver_acquisition_phone_otp';
+
+        // Generate the token for a specific action
+        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        return verifyOTPNumber(phoneNumber, otp, token, variant, utmChannel, marketerCode, undefined);
+    }, [phoneNumber, variant, utmChannel, marketerCode, executeRecaptcha]);
+
     const onOtpVerifySuccess = useCallback(() => completeAndNavigateToStore(variant, platform), [variant, platform])
-    const onPhoneNumberSubmit = useCallback(() => sendOTPVerification(phoneNumber, setIsLoading), [phoneNumber])
 
     const onDownloadImageClick = useCallback((p: 'ios' | 'android') => {
         setPlatform(p);
@@ -270,14 +304,14 @@ export default function DownloadPage({
     }, []);
 
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
-    const currentHref = `/downloads/${variant}${referralCode.length === 0 ? '' : `?ref=${referralCode}`}`;
-    const otherHref = `/downloads/${otherVariant}${referralCode.length === 0 ? '' : `?ref=${referralCode}`}`;
+    const currentHref = `/downloads/${variant}${toQueryString({ref: marketerCode, utm_source: utmChannel})}`;
+    const otherHref = `/downloads/${otherVariant}${toQueryString({ref: marketerCode, utm_source: utmChannel})}`;
     const currentLabel = variant === "driver" ? "Car Owners" : "Passengers";
     const otherLabel = variant === "driver" ? "Passengers" : "Car Owners";
 
     return (
         <>
-            <NavBar variant={variant} ref={referralCode} onAction={() => setModal("signup")}/>
+            <NavBar variant={variant} ref={marketerCode} source={utmChannel} onAction={() => setModal("signup")}/>
             <div className={cn("min-h-screen bg-white mt-3", satoshi.className)}>
 
                 <div className="max-w-[1120px] mx-auto md:w-[78%] px-6 md:px-0">
@@ -342,10 +376,11 @@ export default function DownloadPage({
                 {modal === "signup" && (
                     <SignupModal
                         variant={variant}
-                        referralCode={referralCode}
                         phoneNumber={phoneNumber}
                         countryCode={countryCode}
-                        onReferralChange={setReferralCode}
+                        referralCode={''}
+                        onReferralChange={() => {
+                        }}
                         onPhoneChange={setPhoneNumber}
                         onCountryChange={setCountryCode}
                         isLoading={isLoading}
@@ -354,12 +389,12 @@ export default function DownloadPage({
                         onOtpVerifySuccess={onOtpVerifySuccess}
                         onVerifyPhoneOtp={onVerifyPhoneOtp}
                         onResendPhoneOtp={onResendPhoneOtp}
-                        enableUserRefCode={false}
+                        enableReferralCodeInput={false}
                     />
                 )}
 
                 <div className="hidden md:flex">
-                    <Footer variant={variant} ref={referralCode}/>
+                    <Footer variant={variant} ref={marketerCode} source={utmChannel}/>
                 </div>
             </div>
         </>

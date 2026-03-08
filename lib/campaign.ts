@@ -1,6 +1,7 @@
 export type CampaignVariant = "driver" | "passenger";
 
 export const CAMPAIGN_REFERRAL_STORAGE_KEY = "campaign_ref";
+export const CAMPAIGN_SOURCE_STORAGE_KEY = "campaign_source";
 
 export const CAMPAIGN_STORE_URLS: Record<
     CampaignVariant,
@@ -239,6 +240,22 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
     "22_111": 23.0, "22_112": 24.0, "22_113": 22.0, "22_114": 10.0,
 };
 
+// ---- TYPES --------------------------------------------------
+type SendUserAcquisitionPhoneOtpDataSchema = {
+    phoneNumber: string;
+    marketerCode?: string;
+    peerReferrerCode?: string;
+    recaptchaToken: string;
+}
+
+type VerifyUserAcquisitionPhoneOtpDataSchema = {
+    phoneNumber: string;
+    otp: string;
+    marketerCode?: string;
+    peerReferrerCode?: string;
+    channel: string;
+    recaptchaToken: string;
+}
 // ---- HELPERS --------------------------------------------------
 type FetchPostOptions = Omit<RequestInit, "method" | "body">;
 
@@ -270,11 +287,11 @@ export async function fetchPost<TBody, TResponse>(
 
         if (!res.ok) {
             const error: ApiError = await res.json();
-            return { ok: false, error };
+            return {ok: false, error};
         }
 
         const data: TResponse = await res.json();
-        return { ok: true, data, status: res.status };
+        return {ok: true, data, status: res.status};
     } catch (err) {
         return {
             ok: false,
@@ -288,9 +305,25 @@ export async function fetchPost<TBody, TResponse>(
 }
 
 // ---- FUNCTIONS --------------------------------------------------
-const delay = (ms: number): Promise<void> => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-};
+function formatPhoneNumber(countryCode: string, phone: string): string {
+    // Strip all non-digit characters
+    let digits = phone.replace(/\D/g, "");
+
+    // Normalize countryCode to digits only (e.g. "+234" or "234" → "234")
+    const cc = countryCode.replace(/\D/g, "");
+
+    // Strip leading country code if already present
+    if (digits.startsWith(cc)) {
+        digits = digits.slice(cc.length);
+    }
+
+    // Strip leading 0 (trunk prefix)
+    if (digits.startsWith("0")) {
+        digits = digits.slice(1);
+    }
+
+    return `+${cc}${digits}`;
+}
 
 const detectPlatform = (): "ios" | "android" | "web" => {
     if (typeof window === "undefined") return "web";
@@ -300,17 +333,26 @@ const detectPlatform = (): "ios" | "android" | "web" => {
         return "ios";
     return "web";
 }
-export const verifyOTPNumber = async (otp: string) => {
-    console.log(otp);
-    // MAKE CALL TO VERIFY OTP
-};
-export const resendOTPVerification = async () => {
-    // MAKE CALL TO SEND OTP
+
+export function toQueryString(params: Record<string, string | undefined>): string {
+    const search = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(params)) {
+        if (value != null && value !== "") {
+            search.append(key, value);
+        }
+    }
+
+    const qs = search.toString();
+    return qs ? `?${qs}` : "";
 }
-export const sendOTPVerification = async (phoneNumber: string, setLoader: (value: boolean) => void) => {
-    if (phoneNumber.length < 1) {
+
+export const sendOTPVerification = async (phone: string, recaptchaToken: string, variant: CampaignVariant, marketerCode: string | undefined, peerReferrerCode: string | undefined, setLoader: (value: boolean) => void) => {
+    if (phone.length < 1) {
         throw new Error("Phone number is required");
     }
+
+    const phoneNumber = formatPhoneNumber('234', phone);
 
     const phoneNumValid = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(phoneNumber);
 
@@ -319,13 +361,50 @@ export const sendOTPVerification = async (phoneNumber: string, setLoader: (value
     }
 
     setLoader(true);
-    // // MAKE CALL TO SEND OTP
-    await delay(2000);
-    setLoader(false);
-    // throw new Error('Network Error - Try again later');
 
-    // IF ERROR, THROW
+    const url = variant === 'passenger' ? '' : ''
+
+    // // MAKE CALL TO SEND OTP
+    const response = await fetchPost<SendUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
+        url,
+        {phoneNumber, recaptchaToken, marketerCode, peerReferrerCode}
+    );
+    setLoader(false);
+
+    if (!response.ok) {
+        throw new Error(response.error.message);
+    }
+
+    if (!response.data.success) {
+        throw new Error('Failed to send OTP - Try again later');
+    }
 }
+
+export const verifyOTPNumber = async (phone: string, otp: string, recaptchaToken: string, variant: CampaignVariant, channel: string, marketerCode: string | undefined, peerReferrerCode: string | undefined) => {
+    // MAKE CALL TO VERIFY OTP
+    const phoneNumber = formatPhoneNumber('234', phone);
+
+    const phoneNumValid = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(phoneNumber);
+
+    if (!phoneNumValid) {
+        throw new Error("Invalid phone number");
+    }
+
+    const url = variant === 'passenger' ? '' : ''
+
+    const response = await fetchPost<VerifyUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
+        url,
+        {channel, otp, phoneNumber, recaptchaToken, marketerCode, peerReferrerCode}
+    );
+
+    if (!response.ok) {
+        throw new Error(response.error.message);
+    }
+
+    if (!response.data.success) {
+        throw new Error('Failed to verify OTP - Try again later');
+    }
+};
 
 export const completeAndNavigateToStore = async (variant: CampaignVariant, selectedPlatform?: 'ios' | 'android' | 'web') => {
     // IF PASSENGER, SHOW TOAST
