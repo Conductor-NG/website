@@ -260,7 +260,7 @@ type VerifyUserAcquisitionPhoneOtpDataSchema = {
 type FetchPostOptions = Omit<RequestInit, "method" | "body">;
 
 type ApiError = {
-    message: string;
+    error: string;
     code: string;
     status: number;
 };
@@ -287,6 +287,7 @@ export async function fetchPost<TBody, TResponse>(
 
         if (!res.ok) {
             const error: ApiError = await res.json();
+            error.status = res.status;
             return {ok: false, error};
         }
 
@@ -296,7 +297,7 @@ export async function fetchPost<TBody, TResponse>(
         return {
             ok: false,
             error: {
-                message: err instanceof Error ? err.message : "Unknown error",
+                error: err instanceof Error ? err.message : "Unknown error",
                 code: "NETWORK_ERROR",
                 status: 0,
             },
@@ -362,7 +363,7 @@ export const sendOTPVerification = async (phone: string, recaptchaToken: string,
 
     setLoader(true);
 
-    const url = variant === 'passenger' ? '' : ''
+    const url = variant === 'passenger' ? 'https://sendpassengerreferralphoneotp-4drdfehbdq-uc.a.run.app' : 'https://senddriverreferralphoneotp-4drdfehbdq-uc.a.run.app'
 
     // // MAKE CALL TO SEND OTP
     const response = await fetchPost<SendUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
@@ -372,7 +373,7 @@ export const sendOTPVerification = async (phone: string, recaptchaToken: string,
     setLoader(false);
 
     if (!response.ok) {
-        throw new Error(response.error.message);
+        throw new Error(response.error.error);
     }
 
     if (!response.data.success) {
@@ -390,7 +391,7 @@ export const verifyOTPNumber = async (phone: string, otp: string, recaptchaToken
         throw new Error("Invalid phone number");
     }
 
-    const url = variant === 'passenger' ? '' : ''
+    const url = variant === 'passenger' ? 'https://verifypassengerreferralphoneotp-4drdfehbdq-uc.a.run.app' : 'https://verifydriverreferralphoneotp-4drdfehbdq-uc.a.run.app'
 
     const response = await fetchPost<VerifyUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
         url,
@@ -398,7 +399,7 @@ export const verifyOTPNumber = async (phone: string, otp: string, recaptchaToken
     );
 
     if (!response.ok) {
-        throw new Error(response.error.message);
+        throw new Error(response.error.error);
     }
 
     if (!response.data.success) {

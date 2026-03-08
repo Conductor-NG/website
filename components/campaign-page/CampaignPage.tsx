@@ -205,6 +205,7 @@ function OtpStep({
     const [verifying, setVerifying] = useState(false);
     const [resending, setResending] = useState(false);
     const [countdown, setCountdown] = useState(OTP_RESEND_SECONDS);
+    const [verified, setVerified] = useState(false); // ← new
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     // countdown timer
@@ -219,7 +220,6 @@ function OtpStep({
     };
 
     const handleChange = (index: number, value: string) => {
-        // allow only digits
         const digit = value.replace(/\D/g, "").slice(-1);
         const next = [...otp];
         next[index] = digit;
@@ -252,8 +252,7 @@ function OtpStep({
             next[i] = ch;
         });
         setOtp(next);
-        const lastFilled = Math.min(pasted.length, OTP_LENGTH - 1);
-        focusInput(lastFilled);
+        focusInput(Math.min(pasted.length, OTP_LENGTH - 1));
     };
 
     const handleVerify = async () => {
@@ -266,7 +265,7 @@ function OtpStep({
         setVerifying(true);
         try {
             await onVerifyOtp(code);
-            onSuccess();
+            setVerified(true); // ← show success callout
         }
             // eslint-disable-next-line
         catch (err: any) {
@@ -298,6 +297,36 @@ function OtpStep({
 
     const maskedPhone = `${countryCode} ${"*".repeat(Math.max(0, phoneNumber.length - 4))}${phoneNumber.slice(-4)}`;
 
+    // ── Success state ──────────────────────────────────────────────────────────
+    if (verified) {
+        return (
+            <div className="space-y-4">
+                <div className="rounded-xl bg-green-50 px-4 py-4 flex gap-3 items-start">
+                    <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-green-500">
+                        <svg className="size-3 text-white" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+                                  strokeLinejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="text-sm font-semibold text-[#292928]">Account created!</p>
+                        <p className="mt-1 text-xs text-[#676563]">
+                            Your account is ready. Download the app and log in to get started.
+                        </p>
+                    </div>
+                </div>
+
+                <PrimaryButton
+                    onClick={onSuccess}
+                    className="w-full flex place-items-center justify-center"
+                >
+                    Continue
+                </PrimaryButton>
+            </div>
+        );
+    }
+
+    // ── Default OTP entry state ────────────────────────────────────────────────
     return (
         <div className="space-y-4">
             <p className="text-xs text-[#676563]">
@@ -305,13 +334,9 @@ function OtpStep({
                 <span className="font-medium text-[#292928]">{maskedPhone}</span>
             </p>
 
-            {/* OTP boxes */}
             <fieldset>
                 <label className="text-xs text-[#676563]">Enter OTP</label>
-                <div
-                    className="mt-2 flex gap-2"
-                    onPaste={handlePaste}
-                >
+                <div className="mt-2 flex gap-2" onPaste={handlePaste}>
                     {otp.map((digit, i) => (
                         <input
                             key={i}
@@ -335,25 +360,20 @@ function OtpStep({
                 </div>
             </fieldset>
 
-            {/* Error message */}
             {error && (
                 <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-500">
                     {error}
                 </p>
             )}
 
-            {/* Verify button */}
             <PrimaryButton
                 disabled={verifying || otp.join("").length < OTP_LENGTH}
                 onClick={handleVerify}
                 className="w-full flex place-items-center justify-center"
             >
-                {verifying
-                    ? <Loader className="h-4 w-4 animate-spin"/>
-                    : "Verify & Continue"}
+                {verifying ? <Loader className="h-4 w-4 animate-spin"/> : "Verify & Continue"}
             </PrimaryButton>
 
-            {/* Resend */}
             <div className="text-center">
                 {countdown > 0 ? (
                     <p className="text-xs text-[#a09e9c]">
@@ -1124,6 +1144,7 @@ export function SignupModal({
                                 phoneNumber,
                                 countryCode,
                                 onPhoneChange,
+                                onReferralChange,
                                 onCountryChange,
                                 onPhoneNumberSubmit,
                                 onOtpVerifySuccess,
@@ -1181,7 +1202,7 @@ export function SignupModal({
                 <label className="text-xs text-[#676563]">Referral Code</label>
                 <input
                     value={referralCode}
-                    onChange={(e) => onPhoneChange(e.target.value)}
+                    onChange={(e) => onReferralChange(e.target.value)}
                     placeholder="Enter Referral code (Optional)"
                     className={cn(inputClass, "mt-2")}
                 />
