@@ -242,9 +242,10 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
 
 // ---- TYPES --------------------------------------------------
 type SendUserAcquisitionPhoneOtpDataSchema = {
+    role: 'passenger' | 'driver';
     phoneNumber: string;
-    marketerCode?: string;
-    peerReferrerCode?: string;
+    marketerCode?: string | null;
+    peerReferrerCode?: string | null;
     recaptchaToken: string;
 }
 
@@ -363,12 +364,12 @@ export const sendOTPVerification = async (phone: string, recaptchaToken: string,
 
     setLoader(true);
 
-    const url = variant === 'passenger' ? 'https://sendpassengerreferralphoneotp-4drdfehbdq-uc.a.run.app' : 'https://senddriverreferralphoneotp-4drdfehbdq-uc.a.run.app'
+    const url = 'https://senduseracquisitionphoneotp-4drdfehbdq-uc.a.run.app';
 
     // // MAKE CALL TO SEND OTP
     const response = await fetchPost<SendUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
         url,
-        {phoneNumber, recaptchaToken, marketerCode, peerReferrerCode}
+        {phoneNumber, recaptchaToken, marketerCode, peerReferrerCode, role: variant}
     );
     setLoader(false);
 

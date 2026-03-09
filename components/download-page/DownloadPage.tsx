@@ -276,7 +276,7 @@ export default function DownloadPage({
     const closeModal = useCallback(() => setModal("idle"), []);
 
     const onPhoneNumberSubmit = useCallback(async () => {
-        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
+        const action = 'send_passenger_acquisition_phone_otp';
         // Generate the token for a specific action
         const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
         return sendOTPVerification(phoneNumber, token, variant, marketerCode, undefined, setIsLoading);

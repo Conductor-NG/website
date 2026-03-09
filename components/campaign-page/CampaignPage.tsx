@@ -148,8 +148,8 @@ const info: InfoProps[] = [
     {
         head: "Company",
         links: [
-            {title: "About Us", href: "/about"},
-            {title: "Our Vision", href: "/vision"},
+            {title: "About Us", href: "#"},
+            {title: "Our Vision", href: "#"},
         ],
     },
     {
@@ -588,8 +588,39 @@ export function Footer({variant, ref, source}: {
     source: string | undefined
 }) {
     const currentYear = new Date().getFullYear();
+    const [userEmail, setUserEmail] = useState<string>('');
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
     const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
+
+    const generateMailtoUrl = (userEmail: string, variant: CampaignVariant): string => {
+        let url = `mailto:${encodeURIComponent('support@conductor.ng')}`;
+        const params = new URLSearchParams();
+
+        params.set('subject', 'Hello Conductor.NG');
+
+        const body = "Hello Team;\n" +
+        "I just wanted to reach out an indicate my interest in beign part of your journey as a " +
+        variant === 'driver' ? "Car Owner" : "Passenger" + ".\n\n" +
+            `Reach me at (${userEmail})`
+
+        // Use %0A for line breaks in the body as per mailto standards
+        const encodedBody = body.replace(/\n/g, '%0A');
+        params.set('body', encodedBody);
+
+
+        const queryString = params.toString();
+        if (queryString) {
+            url += `?${queryString}`;
+        }
+
+        return url;
+    };
+
+
+    const mailToTeam = useCallback(() => {
+        const url = generateMailtoUrl(userEmail, variant);
+        window.open(url, '_blank', 'noopener');
+    }, [userEmail, variant]);
 
     return (
         <footer className="w-full text-white bg-[#0A0704]">
@@ -609,10 +640,12 @@ export function Footer({variant, ref, source}: {
                             <input
                                 type="email"
                                 placeholder="Enter your email here"
+                                value={userEmail}
+                                onChange={(e) => setUserEmail(e.target.value)}
                                 className="flex-1 bg-[#211e1c] placeholder:text-[#63605e] px-4 border border-white/10 outline-none focus:border-tertiary/50 transition-colors"
                             />
-                            <button
-                                className="w-14 flex justify-center items-center bg-[#f8d9de] text-black hover:bg-[#f2c5cc] transition-colors">
+                            <button onClick={mailToTeam}
+                                    className="w-14 flex justify-center items-center bg-[#f8d9de] text-black hover:bg-[#f2c5cc] transition-colors">
                                 <ArrowRight size={20}/>
                             </button>
                         </div>
@@ -1415,7 +1448,7 @@ export default function CampaignPage({
     const closeModal = useCallback(() => setModal("idle"), []);
 
     const onPhoneNumberSubmit = useCallback(async () => {
-        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
+        const action = 'send_passenger_acquisition_phone_otp';
         // Generate the token for a specific action
         const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
         return sendOTPVerification(phoneNumber, token, variant, marketerCode, referralCode || undefined, setIsLoading);
