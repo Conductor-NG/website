@@ -241,12 +241,12 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
 
 const OTP_URLS = {
     send: {
-        passenger: 'https://senduseracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
-        driver: 'https://senduseracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
+        passenger: 'https://senduseracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
+        driver: 'https://senduseracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
     },
     verify: {
-        passenger: 'https://verifypassengeracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
-        driver: 'https://verifydriveracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
+        passenger: 'https://verifypassengeracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
+        driver: 'https://verifydriveracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
     }
 } as const;
 
