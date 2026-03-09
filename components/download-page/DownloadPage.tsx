@@ -400,7 +400,7 @@ export default function DownloadPage({
                 )}
 
                 <div className="hidden md:flex">
-                    <Footer variant={variant} ref={marketerCode} source={utmChannel}/>
+                    <Footer variant={variant} ref={marketerCode} code={undefined} source={utmChannel}/>
                 </div>
             </div>
         </>
