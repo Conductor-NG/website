@@ -1387,6 +1387,11 @@ export default function CampaignPage({
         if (source) {
             setUtmChannel(source);
         }
+
+        const code = searchParams.get("code");
+        if (code) {
+            setReferralCode(code);
+        }
     }, [searchParams]);
     useEffect(() => {
         if (marketerCode)
