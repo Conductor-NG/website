@@ -85,7 +85,7 @@ const NavBar = ({onAction, variant, ref, source}: {
                         <Link
                             href={href}
                             className="hidden rounded-full border border-[#e6e5e3] px-4 py-2 text-sm font-semibold text-tertiary hover:border-[#d7d5d2] md:inline-flex">
-                            {variant === 'driver' ? "I'm a Passenger" : "I'm a Car Owner"}
+                            {variant === 'driver' ? "Onboard as a Passenger" : "Onboard as a Car Owner"}
                         </Link>
 
                         <button

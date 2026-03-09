@@ -535,15 +535,17 @@ export function Navbar({
                            onAction,
                            source,
                            ref,
+                           code
                        }: {
     variant: CampaignVariant;
     ref: string | undefined,
     source: string | undefined,
+    code: string | undefined,
     onAction: () => void;
 }) {
     const isDriver = variant === "driver";
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
-    const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
+    const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source, code: code})}`;
     const label = isDriver ? "Download App" : "Register";
 
     return (
@@ -564,7 +566,7 @@ export function Navbar({
                     <Link
                         href={href}
                         className="hidden rounded-full border border-[#e6e5e3] px-4 py-2 text-sm font-semibold text-tertiary hover:border-[#d7d5d2] md:inline-flex">
-                        {variant === 'driver' ? "I'm a Passenger" : "I'm a Car Owner"}
+                        {variant === 'driver' ? "Onboard as a Passenger" : "Onboard as a Car Owner"}
                     </Link>
 
                     <button
@@ -582,15 +584,16 @@ export function Navbar({
 
 // ─── Footer ──────────────────────────────────────────────────────────────────
 
-export function Footer({variant, ref, source}: {
+export function Footer({variant, ref, source, code}: {
     variant: CampaignVariant,
     ref: string | undefined,
     source: string | undefined
+    code: string | undefined
 }) {
     const currentYear = new Date().getFullYear();
     const [userEmail, setUserEmail] = useState<string>('');
     const otherVariant: CampaignVariant = variant === "driver" ? "passenger" : "driver";
-    const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
+    const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source, code: code})}`;
 
     const generateMailtoUrl = (userEmail: string, variant: CampaignVariant): string => {
         const subject = encodeURIComponent('Hello Conductor.NG');
@@ -613,7 +616,7 @@ I came across your platform and I'd love to be part of the journey as a ${varian
                     <div className="flex flex-col items-start max-w-sm">
                         <a href={href}
                            className={cn(roboto.className, "text-tertiary bg-[#211e1c] text-sm py-2 px-4 rounded-full mb-8")}>
-                            {variant === "driver" ? 'Support as a Passenger' : 'Onboard as a car owner'}
+                            {variant === "driver" ? 'Onboard as a Passenger' : 'Onboard as a car owner'}
                         </a>
                         <h2 className="text-xl md:text-3xl font-medium mb-8 leading-tight">
                             Be among the first! <br/> Be Part of the Journey
@@ -1466,7 +1469,7 @@ export default function CampaignPage({
     return (
         <>
             <div className={cn("min-h-screen bg-white", satoshi.className)}>
-                <Navbar variant={variant} ref={marketerCode} source={utmChannel} onAction={() => setModal("signup")}/>
+                <Navbar variant={variant} ref={marketerCode} source={utmChannel} code={referralCode} onAction={() => setModal("signup")}/>
 
                 <HeroSection variant={variant}/>
 
@@ -1514,7 +1517,7 @@ export default function CampaignPage({
                     />
                 )}
 
-                <Footer variant={variant} ref={marketerCode} source={utmChannel}/>
+                <Footer variant={variant} ref={marketerCode} code={referralCode} source={utmChannel}/>
             </div>
         </>
     );
