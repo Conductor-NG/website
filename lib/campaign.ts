@@ -1,7 +1,6 @@
 export type CampaignVariant = "driver" | "passenger";
 
 export const CAMPAIGN_REFERRAL_STORAGE_KEY = "campaign_ref";
-export const CAMPAIGN_SOURCE_STORAGE_KEY = "campaign_source";
 
 export const CAMPAIGN_STORE_URLS: Record<
     CampaignVariant,
@@ -240,6 +239,17 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
     "22_111": 23.0, "22_112": 24.0, "22_113": 22.0, "22_114": 10.0,
 };
 
+const OTP_URLS = {
+    send: {
+        passenger: 'https://senduseracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
+        driver: 'https://senduseracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
+    },
+    verify: {
+        passenger: 'https://verifypassengeracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
+        driver: 'https://verifydriveracquisitionphoneotp-4drdfehbdq-uc.a.run.app',
+    }
+} as const;
+
 // ---- TYPES --------------------------------------------------
 type SendUserAcquisitionPhoneOtpDataSchema = {
     role: 'passenger' | 'driver';
@@ -277,7 +287,7 @@ export async function fetchPost<TBody, TResponse>(
 ): Promise<ApiResponse<TResponse>> {
     try {
         const res = await fetch(url, {
-            method: "POST",
+            method: 'post',
             headers: {
                 "Content-Type": "application/json",
                 ...options?.headers,
@@ -336,6 +346,17 @@ const detectPlatform = (): "ios" | "android" | "web" => {
     return "web";
 }
 
+export async function getRecaptchaToken({passengerAction, driverAction, variant, executeRecaptcha}: {
+    passengerAction: string,
+    driverAction: string,
+    variant: CampaignVariant,
+    executeRecaptcha: ((action?: string) => Promise<string>) | undefined
+}): Promise<string> {
+    if (!executeRecaptcha) throw new Error('Recaptcha not initialized');
+    const action = variant === 'passenger' ? passengerAction : driverAction;
+    return executeRecaptcha(action);
+}
+
 export function toQueryString(params: Record<string, string | undefined>): string {
     const search = new URLSearchParams();
 
@@ -364,7 +385,7 @@ export const sendOTPVerification = async (phone: string, recaptchaToken: string,
 
     setLoader(true);
 
-    const url = 'https://senduseracquisitionphoneotp-4drdfehbdq-uc.a.run.app';
+    const url = OTP_URLS.send[variant];
 
     // // MAKE CALL TO SEND OTP
     const response = await fetchPost<SendUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
@@ -392,7 +413,7 @@ export const verifyOTPNumber = async (phone: string, otp: string, recaptchaToken
         throw new Error("Invalid phone number");
     }
 
-    const url = variant === 'passenger' ? 'https://verifypassengerreferralphoneotp-4drdfehbdq-uc.a.run.app' : 'https://verifydriverreferralphoneotp-4drdfehbdq-uc.a.run.app'
+    const url = OTP_URLS.verify[variant];
 
     const response = await fetchPost<VerifyUserAcquisitionPhoneOtpDataSchema, { success: boolean }>(
         url,

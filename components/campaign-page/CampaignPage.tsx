@@ -18,7 +18,7 @@ import {
     sendOTPVerification,
     completeAndNavigateToStore,
     verifyOTPNumber,
-    toQueryString
+    toQueryString, getRecaptchaToken
 } from "@/lib/campaign";
 import {Roboto} from "next/font/google";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
@@ -593,34 +593,16 @@ export function Footer({variant, ref, source}: {
     const href = `/campaign/${otherVariant}${toQueryString({ref: ref, utm_source: source})}`;
 
     const generateMailtoUrl = (userEmail: string, variant: CampaignVariant): string => {
-        let url = `mailto:${encodeURIComponent('support@conductor.ng')}`;
-        const params = new URLSearchParams();
+        const subject = encodeURIComponent('Hello Conductor.NG');
 
-        params.set('subject', 'Hello Conductor.NG');
+        const body = encodeURIComponent(`Hi Conductor Team,
 
-        const body = "Hello Team;\n" +
-        "I just wanted to reach out an indicate my interest in beign part of your journey as a " +
-        variant === 'driver' ? "Car Owner" : "Passenger" + ".\n\n" +
-            `Reach me at (${userEmail})`
+I came across your platform and I'd love to be part of the journey as a ${variant === 'driver' ? "Car Owner" : "Passenger"}. Count me in!
 
-        // Use %0A for line breaks in the body as per mailto standards
-        const encodedBody = body.replace(/\n/g, '%0A');
-        params.set('body', encodedBody);
+💌 You can reach me at: ${userEmail}`);
 
-
-        const queryString = params.toString();
-        if (queryString) {
-            url += `?${queryString}`;
-        }
-
-        return url;
+        return `mailto:support@conductor.ng?subject=${subject}&body=${body}`;
     };
-
-
-    const mailToTeam = useCallback(() => {
-        const url = generateMailtoUrl(userEmail, variant);
-        window.open(url, '_blank', 'noopener');
-    }, [userEmail, variant]);
 
     return (
         <footer className="w-full text-white bg-[#0A0704]">
@@ -644,10 +626,10 @@ export function Footer({variant, ref, source}: {
                                 onChange={(e) => setUserEmail(e.target.value)}
                                 className="flex-1 bg-[#211e1c] placeholder:text-[#63605e] px-4 border border-white/10 outline-none focus:border-tertiary/50 transition-colors"
                             />
-                            <button onClick={mailToTeam}
-                                    className="w-14 flex justify-center items-center bg-[#f8d9de] text-black hover:bg-[#f2c5cc] transition-colors">
+                            <a href={generateMailtoUrl(userEmail, variant)}
+                               className="w-14 flex justify-center items-center bg-[#f8d9de] text-black hover:bg-[#f2c5cc] transition-colors">
                                 <ArrowRight size={20}/>
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -1448,25 +1430,29 @@ export default function CampaignPage({
     const closeModal = useCallback(() => setModal("idle"), []);
 
     const onPhoneNumberSubmit = useCallback(async () => {
-        const action = 'send_passenger_acquisition_phone_otp';
-        // Generate the token for a specific action
-        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        const token = await getRecaptchaToken({
+            driverAction: 'send_driver_acquisition_phone_otp',
+            passengerAction: 'send_passenger_acquisition_phone_otp',
+            variant, executeRecaptcha,
+        });
         return sendOTPVerification(phoneNumber, token, variant, marketerCode, referralCode || undefined, setIsLoading);
     }, [phoneNumber, variant, marketerCode, referralCode, executeRecaptcha]);
 
     const onResendPhoneOtp = useCallback(async () => {
-        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
-
-        // Generate the token for a specific action
-        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        const token = await getRecaptchaToken({
+            driverAction: 'send_driver_acquisition_phone_otp',
+            passengerAction: 'send_passenger_acquisition_phone_otp',
+            variant, executeRecaptcha,
+        });
         return sendOTPVerification(phoneNumber, token, variant, marketerCode, referralCode || undefined, setIsLoading);
     }, [phoneNumber, variant, marketerCode, referralCode, executeRecaptcha]);
 
     const onVerifyPhoneOtp = useCallback(async (otp: string) => {
-        const action = variant === 'passenger' ? 'verify_passenger_acquisition_phone_otp' : 'verify_driver_acquisition_phone_otp';
-
-        // Generate the token for a specific action
-        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        const token = await getRecaptchaToken({
+            driverAction: 'verify_driver_acquisition_phone_otp',
+            passengerAction: 'verify_passenger_acquisition_phone_otp',
+            variant, executeRecaptcha,
+        });
         return verifyOTPNumber(phoneNumber, otp, token, variant, utmChannel, marketerCode, referralCode || undefined);
     }, [phoneNumber, variant, utmChannel, marketerCode, referralCode, executeRecaptcha]);
 

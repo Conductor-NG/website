@@ -12,7 +12,7 @@ import {
     verifyOTPNumber,
     completeAndNavigateToStore,
     sendOTPVerification,
-    toQueryString,
+    toQueryString, getRecaptchaToken,
 } from "@/lib/campaign";
 import {Footer, SignupModal} from "@/components/campaign-page/CampaignPage";
 import {Roboto} from "next/font/google";
@@ -276,25 +276,29 @@ export default function DownloadPage({
     const closeModal = useCallback(() => setModal("idle"), []);
 
     const onPhoneNumberSubmit = useCallback(async () => {
-        const action = 'send_passenger_acquisition_phone_otp';
-        // Generate the token for a specific action
-        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        const token = await getRecaptchaToken({
+            driverAction: 'send_driver_acquisition_phone_otp',
+            passengerAction: 'send_passenger_acquisition_phone_otp',
+            variant, executeRecaptcha,
+        });
         return sendOTPVerification(phoneNumber, token, variant, marketerCode, undefined, setIsLoading);
     }, [phoneNumber, variant, marketerCode, executeRecaptcha]);
 
     const onResendPhoneOtp = useCallback(async () => {
-        const action = variant === 'passenger' ? 'send_passenger_acquisition_phone_otp' : 'send_driver_acquisition_phone_otp';
-
-        // Generate the token for a specific action
-        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        const token = await getRecaptchaToken({
+            driverAction: 'send_driver_acquisition_phone_otp',
+            passengerAction: 'send_passenger_acquisition_phone_otp',
+            variant, executeRecaptcha,
+        });
         return sendOTPVerification(phoneNumber, token, variant, marketerCode, undefined, setIsLoading);
     }, [phoneNumber, variant, marketerCode, executeRecaptcha]);
 
     const onVerifyPhoneOtp = useCallback(async (otp: string) => {
-        const action = variant === 'passenger' ? 'verify_passenger_acquisition_phone_otp' : 'verify_driver_acquisition_phone_otp';
-
-        // Generate the token for a specific action
-        const token = executeRecaptcha ? await executeRecaptcha.call(action) : '';
+        const token = await getRecaptchaToken({
+            driverAction: 'verify_driver_acquisition_phone_otp',
+            passengerAction: 'verify_passenger_acquisition_phone_otp',
+            variant, executeRecaptcha,
+        });
         return verifyOTPNumber(phoneNumber, otp, token, variant, utmChannel, marketerCode, undefined);
     }, [phoneNumber, variant, utmChannel, marketerCode, executeRecaptcha]);
 
