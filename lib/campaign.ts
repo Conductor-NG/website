@@ -41,7 +41,7 @@ export const CAMPAIGN_LOCATIONS = [
     {id: "20", name: "VGC Bus Stop, Lekki-Ajah"},
     {id: "21", name: "Ilaje Bus Stop, Ajah"},
     {id: "22", name: "Lagos Business School (LBS), Ajah"},
-];
+] as const;
 
 export const ISLAND_LOCATIONS = [
     // Previous Locations
@@ -61,7 +61,7 @@ export const ISLAND_LOCATIONS = [
     {id: "112", name: "Maroko (Sandfill), VI/Lekki"},
     {id: "113", name: "Ikoyi (Falomo Roundabout), Ikoyi"},
     {id: "114", name: "Lekki Phase 1 (Admiralty Gate), Lekki"},
-];
+] as const;
 
 /**
  * Distance Matrix (in Kilometers)
@@ -171,7 +171,7 @@ export const DISTANCE_MATRIX_GEMINI: Record<string, number> = {
     "22_101": 32.0, "22_102": 33.2, "22_103": 32.3, "22_104": 32.8, "22_105": 33.5,
     "22_106": 32.5, "22_107": 32.4, "22_108": 33.3, "22_109": 33.5, "22_110": 33.8,
     "22_111": 25.5, "22_112": 23.5, "22_113": 27.5, "22_114": 21.5,
-};
+} as const;
 
 export const DISTANCE_MATRIX_GROK: Record<string, number> = {
     // Abule Egba Area (6-10) to original Island (101-110)
@@ -237,7 +237,92 @@ export const DISTANCE_MATRIX_GROK: Record<string, number> = {
     "20_111": 20.0, "20_112": 21.0, "20_113": 19.0, "20_114": 14.0,
     "21_111": 19.0, "21_112": 20.0, "21_113": 18.0, "21_114": 13.0,
     "22_111": 23.0, "22_112": 24.0, "22_113": 22.0, "22_114": 10.0,
-};
+} as const;
+
+// ---- ABUJA --------------------------------------------------
+export const ABUJA_CAMPAIGN_LOCATIONS = [
+    // Kubwa Area
+    {id: "30", name: "Kubwa NNPC Junction, Kubwa"},
+    {id: "31", name: "Kubwa FHA (Federal Housing Authority), Kubwa"},
+
+    // Lugbe Area
+    {id: "32", name: "Lugbe FHA, Lugbe"},
+    {id: "33", name: "Berger Junction, Lugbe"},
+
+    // Gwarimpa Area
+    {id: "34", name: "Gwarimpa 1st Avenue, Gwarimpa"},
+    {id: "35", name: "Gwarimpa 3rd Avenue, Gwarimpa"},
+] as const;
+
+export const ABUJA_CENTRAL_LOCATIONS = [
+    // Central Business District (CBD)
+    {id: "201", name: "Federal Secretariat, CBD"},
+    {id: "202", name: "NNPC Towers, CBD"},
+
+    // Wuse Area
+    {id: "203", name: "Wuse Market, Wuse Zone 5"},
+    {id: "204", name: "Aminu Kano Crescent, Wuse II"},
+] as const;
+
+/**
+ * Abuja Distance Matrix (in Kilometers)
+ * Key Format: "{StartLocationID}_{EndLocationID}"
+ * Distances are based on driving routes via major expressways (Murtala Mohammed Expy/ONEX, Umaru Musa Yar'Adua Expy/Airport Rd).
+ */
+export const ABUJA_DISTANCE_MATRIX: Record<string, number> = {
+    // ==========================================
+    // KUBWA AREA (IDs 30-31) -> CBD & WUSE
+    // Route: Murtala Mohammed Expy (ONEX)
+    // ==========================================
+
+    // 30: Kubwa NNPC Junction
+    "30_201": 28.5, // to Federal Secretariat (CBD)
+    "30_202": 27.2, // to NNPC Towers (CBD)
+    "30_203": 25.0, // to Wuse Market
+    "30_204": 23.5, // to Aminu Kano (Wuse II)
+
+    // 31: Kubwa FHA
+    "31_201": 26.0,
+    "31_202": 24.5,
+    "31_203": 22.5,
+    "31_204": 21.0,
+
+
+    // ==========================================
+    // LUGBE AREA (IDs 32-33) -> CBD & WUSE
+    // Route: Umaru Musa Yar'Adua Expy (Airport Road)
+    // ==========================================
+
+    // 32: Lugbe FHA
+    "32_201": 20.5, // to Federal Secretariat (CBD)
+    "32_202": 18.5, // to NNPC Towers (CBD)
+    "32_203": 19.0, // to Wuse Market
+    "32_204": 22.0, // to Aminu Kano (Wuse II)
+
+    // 33: Berger Junction Lugbe
+    "33_201": 23.0,
+    "33_202": 21.0,
+    "33_203": 21.5,
+    "33_204": 24.5,
+
+
+    // ==========================================
+    // GWARIMPA AREA (IDs 34-35) -> CBD & WUSE
+    // Route: Murtala Mohammed Expy (ONEX) / Ahmadu Bello Way
+    // ==========================================
+
+    // 34: Gwarimpa 1st Avenue
+    "34_201": 16.5, // to Federal Secretariat (CBD)
+    "34_202": 15.0, // to NNPC Towers (CBD)
+    "34_203": 13.5, // to Wuse Market
+    "34_204": 11.5, // to Aminu Kano (Wuse II)
+
+    // 35: Gwarimpa 3rd Avenue
+    "35_201": 18.0,
+    "35_202": 16.5,
+    "35_203": 15.0,
+    "35_204": 13.0,
+} as const;
 
 const OTP_URLS = {
     send: {
@@ -250,7 +335,7 @@ const OTP_URLS = {
     }
 } as const;
 
-// ---- TYPES --------------------------------------------------
+// ---- TYPES ----------------------------------------------------
 type SendUserAcquisitionPhoneOtpDataSchema = {
     role: 'passenger' | 'driver';
     phoneNumber: string;

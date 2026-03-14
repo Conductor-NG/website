@@ -18,7 +18,7 @@ import {
     sendOTPVerification,
     completeAndNavigateToStore,
     verifyOTPNumber,
-    toQueryString, getRecaptchaToken
+    toQueryString, getRecaptchaToken, ABUJA_DISTANCE_MATRIX, ABUJA_CENTRAL_LOCATIONS, ABUJA_CAMPAIGN_LOCATIONS
 } from "@/lib/campaign";
 import {Roboto} from "next/font/google";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
@@ -484,17 +484,27 @@ function PrimaryButton({
 }
 
 function SelectField({
+                         version,
                          value,
                          onChange,
                          placeholder,
                          type,
                      }: {
+    version: 'v1' | 'v2';
     value: string;
     onChange: (v: string) => void;
     placeholder: string;
     type: "from" | "to";
 }) {
-    const options = type === "from" ? CAMPAIGN_LOCATIONS : ISLAND_LOCATIONS;
+
+    const dx = {
+        from: version === 'v1' ? CAMPAIGN_LOCATIONS : ABUJA_CAMPAIGN_LOCATIONS,
+        to: version === 'v1' ? ISLAND_LOCATIONS : ABUJA_CENTRAL_LOCATIONS,
+    } as const;
+
+    const options = type === "from" ? dx.from : dx.to;
+
+
     return (
         <div className="relative w-full">
             <select
@@ -822,6 +832,7 @@ function HeroSection({variant}: { variant: CampaignVariant }) {
 
 function CalculatorSection({
                                variant,
+                               version,
                                startLocation,
                                endLocation,
                                onStartChange,
@@ -830,6 +841,7 @@ function CalculatorSection({
                                canEstimate,
                            }: {
     variant: CampaignVariant;
+    version: 'v1' | 'v2';
     startLocation: string;
     endLocation: string;
     onStartChange: (v: string) => void;
@@ -867,12 +879,14 @@ function CalculatorSection({
 
                     <div className="flex flex-col gap-4">
                         <SelectField
+                            version={version}
                             value={startLocation}
                             onChange={onStartChange}
                             placeholder="Select starting point route"
                             type="from"
                         />
                         <SelectField
+                            version={version}
                             value={endLocation}
                             onChange={onEndChange}
                             placeholder="Select destination route"
@@ -1354,11 +1368,7 @@ export function SignupModal({
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
-export default function CampaignPage({
-                                         variant,
-                                     }: {
-    variant: CampaignVariant;
-}) {
+export default function CampaignPage({variant, version}: { variant: CampaignVariant; version: 'v1' | 'v2' }) {
     const isDriver = variant === "driver";
     const searchParams = useSearchParams();
     const {executeRecaptcha} = useGoogleReCaptcha();
@@ -1406,7 +1416,8 @@ export default function CampaignPage({
         if (!startLocation || !endLocation) return 0;
 
         const lookupKey = `${startLocation}_${endLocation}`;
-        const distance = DISTANCE_MATRIX[lookupKey];
+        const matrix = version === 'v1' ? DISTANCE_MATRIX : ABUJA_DISTANCE_MATRIX;
+        const distance = matrix[lookupKey];
 
         if (distance === undefined) {
             console.warn(`Distance not mapped for key: ${lookupKey}`);
@@ -1421,7 +1432,7 @@ export default function CampaignPage({
         }
 
         return estimate;
-    }, [startLocation, endLocation, isDriver]);
+    }, [startLocation, endLocation, isDriver, version]);
 
     const estimate = useMemo(() => {
 
@@ -1469,11 +1480,13 @@ export default function CampaignPage({
     return (
         <>
             <div className={cn("min-h-screen bg-white", satoshi.className)}>
-                <Navbar variant={variant} ref={marketerCode} source={utmChannel} code={referralCode} onAction={() => setModal("signup")}/>
+                <Navbar variant={variant} ref={marketerCode} source={utmChannel} code={referralCode}
+                        onAction={() => setModal("signup")}/>
 
                 <HeroSection variant={variant}/>
 
                 <CalculatorSection
+                    version={version}
                     variant={variant}
                     startLocation={startLocation}
                     endLocation={endLocation}

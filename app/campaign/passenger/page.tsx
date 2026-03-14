@@ -6,7 +6,7 @@ export default function PassengerCampaignPage() {
     return (
         <Suspense fallback={null}>
             <ReCaptchaProvider>
-                <CampaignPage variant="passenger"/>
+                <CampaignPage variant="passenger" version='v1'/>
             </ReCaptchaProvider>
         </Suspense>
     );

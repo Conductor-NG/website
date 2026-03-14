@@ -6,7 +6,7 @@ export default function DriverCampaignPage() {
     return (
         <Suspense fallback={null}>
             <ReCaptchaProvider>
-                <CampaignPage variant="driver" version='v1'/>
+                <CampaignPage variant="driver" version='v2'/>
             </ReCaptchaProvider>
         </Suspense>
     );

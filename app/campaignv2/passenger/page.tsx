@@ -1,12 +1,12 @@
 import CampaignPage from "@/components/campaign-page/CampaignPage";
-import ReCaptchaProvider from "@/components/captcha/ReCaptchaProvider";
 import {Suspense} from "react";
+import ReCaptchaProvider from "@/components/captcha/ReCaptchaProvider";
 
-export default function DriverCampaignPage() {
+export default function PassengerCampaignPage() {
     return (
         <Suspense fallback={null}>
             <ReCaptchaProvider>
-                <CampaignPage variant="driver" version='v1'/>
+                <CampaignPage variant="passenger" version='v2'/>
             </ReCaptchaProvider>
         </Suspense>
     );
