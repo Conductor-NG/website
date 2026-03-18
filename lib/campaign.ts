@@ -326,12 +326,12 @@ export const ABUJA_DISTANCE_MATRIX: Record<string, number> = {
 
 const OTP_URLS = {
     send: {
-        passenger: 'https://senduseracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
-        driver: 'https://senduseracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
+        passenger: process.env.NEXT_PUBLIC_SEND_USER_PHONE_OTP_URL!,
+        driver: process.env.NEXT_PUBLIC_SEND_USER_PHONE_OTP_URL!,
     },
     verify: {
-        passenger: 'https://verifypassengeracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
-        driver: 'https://verifydriveracquisitionphoneotp-z3lpdcfgnq-uc.a.run.app',
+        passenger: process.env.NEXT_PUBLIC_VERIFY_PASSENGER_PHONE_OTP_URL!,
+        driver: process.env.NEXT_PUBLIC_VERIFY_DRIVER_PHONE_OTP_URL!,
     }
 } as const;
 
