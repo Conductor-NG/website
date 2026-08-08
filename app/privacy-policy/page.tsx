@@ -21,26 +21,27 @@ const listOfPolicies: {
     linkAddress: "policy-1",
   },
   { title: "How Do We Collect Information From You?", linkAddress: "policy-2" },
-  { title: "How We Use Your Information", linkAddress: "policy-3" },
-  { title: "Marketing Material", linkAddress: "policy-4" },
+  { title: "Accessing your location", linkAddress: "policy-3" },
+  { title: "How We Use Your Information", linkAddress: "policy-4" },
+  { title: "Marketing Material", linkAddress: "policy-5" },
   {
     title: "Digital Marketing and Online Advertising",
-    linkAddress: "policy-5",
+    linkAddress: "policy-6",
   },
-  { title: "Disclosure of Your Information", linkAddress: "policy-6" },
-  { title: "How Long We Keep Your Information", linkAddress: "policy-7" },
+  { title: "Disclosure of Your Information", linkAddress: "policy-7" },
+  { title: "How Long We Keep Your Information", linkAddress: "policy-8" },
   {
     title: "How We Store and Secure Your Information",
-    linkAddress: "policy-8",
+    linkAddress: "policy-9",
   },
-  { title: "Sensitive Personal Information", linkAddress: "policy-9" },
+  { title: "Sensitive Personal Information", linkAddress: "policy-10" },
   {
     title: "Accessing and Correcting Your Information",
-    linkAddress: "policy-10",
+    linkAddress: "policy-11",
   },
-  { title: "Erasing Your Information", linkAddress: "policy-11" },
-  { title: "Changes to This Policy", linkAddress: "policy-12" },
-  { title: "Contacting Us and Complaints", linkAddress: "policy-13" },
+  { title: "Erasing Your Information", linkAddress: "policy-12" },
+  { title: "Changes to This Policy", linkAddress: "policy-13" },
+  { title: "Contacting Us and Complaints", linkAddress: "policy-14" },
 ];
 const PrivacyPolicy = () => {
   const [focus, setFocused] = useState<string>("");
@@ -75,7 +76,7 @@ const PrivacyPolicy = () => {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
-                }
+                },
               )}`}</p>
               <p className="md:font-light font-normal text-[16px] text-[#292928] leading-[200%]">
                 Conductor.ng (&quot;we&quot;, &quot;us&quot;, or
@@ -103,7 +104,7 @@ const PrivacyPolicy = () => {
                           focus === policy.linkAddress
                             ? "text-primary underline"
                             : ""
-                        }`
+                        }`,
                       )}
                     >
                       {policy.title}
@@ -118,7 +119,7 @@ const PrivacyPolicy = () => {
                 id="policy-1"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-1" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-1" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
                 onFocus={() => setFocused("policy-1")}
@@ -155,7 +156,7 @@ const PrivacyPolicy = () => {
                 id="policy-2"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-2" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-2" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
                 onFocus={() => setFocused("policy-2")}
@@ -182,14 +183,128 @@ const PrivacyPolicy = () => {
                 id="policy-3"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-3" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-3" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
                 onFocus={() => setFocused("policy-3")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  3.&nbsp;How We Use Your Information
+                  3.&nbsp;Location Information
+                </h3>
+                <div className="font-light text-[16px] text-[#292928] leading-[200%]">
+                  <p className="mb-1">
+                    Conductor collects precise location (GPS) and approximate
+                    location from your device. For each reading we record the
+                    latitude and longitude, the accuracy, speed and heading, the
+                    time it was taken, and the trip and your role on it. We
+                    collect this from both car owners and passengers.
+                  </p>
+
+                  <p className="mb-1 mt-4">
+                    <strong>
+                      Conductor collects location data in the background — that
+                      is, while the app is closed or not in use.
+                    </strong>{" "}
+                    Background collection is limited to trips you have joined.
+                    It begins up to 30 minutes before your scheduled pickup
+                    time, continues while the trip is running, and stops when
+                    the trip ends or is cancelled. We do not collect your
+                    location between trips. Whenever background collection is
+                    active, Android shows a persistent notification reading
+                    &quot;Conductor — trip in progress&quot;. If that
+                    notification is not on screen, we are not collecting your
+                    location in the background.
+                  </p>
+
+                  <p className="mb-1 mt-4">We use your location to:</p>
+                  <ul className="list-disc pl-5">
+                    <li>
+                      Confirm that a trip actually happened, by comparing the
+                      car owner&apos;s and the passenger&apos;s location
+                      readings for the same trip — this decides whether a fare
+                      is released to the car owner or refunded to the passenger
+                    </li>
+                    <li>Resolve disputes about what happened on a trip</li>
+                    <li>
+                      Detect route deviation during a trip, as a safety measure
+                    </li>
+                    <li>Power the SOS safety feature</li>
+                    <li>
+                      Show maps, search for places, and estimate routes and
+                      travel times when you plan or view a trip
+                    </li>
+                    <li>
+                      Improve the service through aggregate analysis of routes
+                      and timing
+                    </li>
+                  </ul>
+
+                  <p className="mb-1 mt-4">
+                    We do not sell your location data, and we do not share it
+                    with advertisers or data brokers. We share it only:
+                  </p>
+                  <ul className="list-disc pl-5">
+                    <li>
+                      With the other people on your trip — a car owner and their
+                      passengers can see location information relevant to that
+                      shared journey
+                    </li>
+                    <li>
+                      With your emergency contacts, if you trigger SOS — this
+                      sends a live location link to the contacts you chose and
+                      alerts our safety team, and happens only when you trigger
+                      it
+                    </li>
+                    <li>
+                      With Google Maps Platform, to render maps, search places
+                      and calculate routes and travel times — these requests are
+                      made through Conductor&apos;s servers
+                    </li>
+                    <li>
+                      With service providers who host and operate our
+                      infrastructure, and may process this data only on our
+                      instructions
+                    </li>
+                    <li>
+                      Where the law requires it, or to protect the safety of our
+                      users
+                    </li>
+                  </ul>
+
+                  <p className="mb-1 mt-4">
+                    We keep trip location records for 90 days, after which they
+                    are automatically deleted. Records that form part of an
+                    unresolved dispute or safety investigation are held until
+                    that matter is concluded, and deleted afterwards.
+                  </p>
+
+                  <p className="mb-1 mt-4">
+                    You can turn off location permission at any time in your
+                    device settings (Settings, then Apps, then Conductor, then
+                    Permissions, then Location), and Conductor will stop
+                    collecting your location. Turning it off means we cannot
+                    confirm your attendance on a trip, which affects whether
+                    fares are released or refunded, and disables SOS live
+                    location. The rest of the app continues to work. You can
+                    request a copy of your data, or ask us to delete your
+                    account and the location data attached to it, at
+                    support@conductor.ng.
+                  </p>
+                </div>
+              </div>
+              <div
+                id="policy-4"
+                className={cn(
+                  "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
+                  `${focus === "policy-4" ? "border-[#E88D0E]" : ""}`,
+                )}
+                tabIndex={0}
+                onFocus={() => setFocused("policy-4")}
+                onBlur={() => setFocused("")}
+              >
+                <h3 className="mb-[32px] font-normal text-[20px]">
+                  4.&nbsp;How We Use Your Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">We use your personal information to:</p>
@@ -203,17 +318,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-4"
+                id="policy-5"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-4" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-5" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-4")}
+                onFocus={() => setFocused("policy-5")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  4.&nbsp;Marketing Material
+                  5.&nbsp;Marketing Material
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -225,17 +340,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-5"
+                id="policy-6"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-5" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-6" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-5")}
+                onFocus={() => setFocused("policy-6")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  5.&nbsp;Digital Marketing and Online Advertising
+                  6.&nbsp;Digital Marketing and Online Advertising
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-5">
@@ -251,17 +366,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-6"
+                id="policy-7"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-6" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-7" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-6")}
+                onFocus={() => setFocused("policy-7")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  6.&nbsp;Disclosure of Your Information
+                  7.&nbsp;Disclosure of Your Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">We may share your information with:</p>
@@ -280,17 +395,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-7"
+                id="policy-8"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-7" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-8" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-7")}
+                onFocus={() => setFocused("policy-8")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  7.&nbsp;How Long We Keep Your Information
+                  8.&nbsp;How Long We Keep Your Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -301,17 +416,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-8"
+                id="policy-9"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-8" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-9" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-8")}
+                onFocus={() => setFocused("policy-9")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  8.&nbsp;How We Store and Secure Your Information
+                  9.&nbsp;How We Store and Secure Your Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -330,17 +445,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-9"
+                id="policy-10"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-9" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-10" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-9")}
+                onFocus={() => setFocused("policy-10")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  9.&nbsp;Sensitive Personal Information
+                  10.&nbsp;Sensitive Personal Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -352,17 +467,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-10"
+                id="policy-11"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-10" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-11" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-10")}
+                onFocus={() => setFocused("policy-11")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  10.&nbsp;Accessing and Correcting Your Information
+                  11.&nbsp;Accessing and Correcting Your Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -372,17 +487,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-11"
+                id="policy-12"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-11" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-12" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-11")}
+                onFocus={() => setFocused("policy-12")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  11.&nbsp;Erasing Your Information
+                  12.&nbsp;Erasing Your Information
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -393,17 +508,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-12"
+                id="policy-13"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-12" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-13" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-12")}
+                onFocus={() => setFocused("policy-13")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  12.&nbsp;Changes to This Policy
+                  13.&nbsp;Changes to This Policy
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
@@ -415,17 +530,17 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
               <div
-                id="policy-13"
+                id="policy-14"
                 className={cn(
                   "mb-[27px] border-[#ACA9A6] border-[0.5px] p-6",
-                  `${focus === "policy-13" ? "border-[#E88D0E]" : ""}`
+                  `${focus === "policy-14" ? "border-[#E88D0E]" : ""}`,
                 )}
                 tabIndex={0}
-                onFocus={() => setFocused("policy-13")}
+                onFocus={() => setFocused("policy-14")}
                 onBlur={() => setFocused("")}
               >
                 <h3 className="mb-[32px] font-normal text-[20px]">
-                  13.&nbsp;Contacting Us and Complaints
+                  14.&nbsp;Contacting Us and Complaints
                 </h3>
                 <div className="font-light text-[16px] text-[#292928] leading-[200%]">
                   <p className="mb-1">
