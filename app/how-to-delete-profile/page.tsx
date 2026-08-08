@@ -17,23 +17,38 @@ const Index = () => {
       id: 1,
       title: "Navigate to Account Settings",
       description:
-        "Log into your account and go to your profile settings. Look for the 'Account' or 'Privacy' section in your user dashboard.",
-      imageUrl: "one.png",
+        "Log into your account and go to your profile settings. Look for the 'App' section in your user dashboard and click it. You will see 'Delete Account' option. Click on it to proceed with the deletion process.",
+      imageUrl: "one.jpeg",
     },
     {
       id: 2,
-      title: "Find Delete Account Option",
+      title: "Delete your Account",
       description:
-        "Scroll down to the bottom of your account settings page. Look for 'Delete Account.",
-      imageUrl: "two.png",
+        "Read the instructions carefully. Click on the 'Delete Account' button.",
+      imageUrl: "two.jpeg",
     },
     {
       id: 3,
+      title: "What should we delete?",
+      description:
+        "You'll be prompted to select what data you want to delete. You can choose to delete all your data or select specific items. Make your selection and click 'Delete' to finalize the process.",
+      imageUrl: "three.jpeg",
+    },
+    {
+      id: 4,
+      title: "Why are you leaving?",
+      description:
+        "This is optional.You'll be prompted to provide a reason for deleting your account. The feedback helps us improve our services. Select an option from the list or write your own reason, then click 'Continue' to proceed.",
+      imageUrl: "four.jpeg",
+    },
+     {
+      id: 5,
       title: "Confirm Account Deletion",
       description:
-        "You'll be asked to confirm your decision. Read all warnings carefully, then click 'Yes' to permanently remove your profile and all associated data.",
-      imageUrl: "three.png",
+        "You'll be asked to confirm your decision. Read all warnings carefully, then click 'Schedule account deletion' to permanently remove your account after 30 days",
+      imageUrl: "five.jpeg",
     },
+     
   ];
 
   const nextStep = () => {
